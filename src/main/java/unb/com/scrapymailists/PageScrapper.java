@@ -1,6 +1,8 @@
 package unb.com.scrapymailists;
 
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,18 +12,76 @@ import org.jsoup.select.Elements;
 import unb.com.entities.Post;
 
 public class PageScrapper {
+	private static final String BASE_URL = "https://lists.boost.org/Archives/boost/";
+
 	public static void main(String[] args) {
-		String url = "https://lists.boost.org/Archives/boost//2022/07/253297.php";
-		Post post = new PageScrapper().scrap(url);
-		System.out.println("Iniciando webscrapping java....");
-		System.out.println(post);
+		new PageScrapper().execute().forEach(System.out::println);
 	}
 
-	/**
-	 * @param passando a String url como paramentro
-	 * @return Retorna Autor, Data, Titulo, Corpo e se original
-	 */
-	public Post scrap(String url) {
+	public List<Post> execute() {
+		List<Post> posts = new LinkedList<>();
+		for (String day : listByDay()) {
+			String urlDay = BASE_URL + day;
+			for (String postId : listPosts(urlDay)) {
+				String urlPost = urlDay + postId;
+				Post post = scrap(urlPost);
+				posts.add(post);
+			}
+		}
+		return posts;
+	}
+
+	private List<String> listPosts(String url) {
+		List<String> posts = new LinkedList();
+
+		Document doc = connect(url);
+
+		posts.add("254599.php");
+		posts.add("254615.php");
+		posts.add("254616.php");
+		posts.add("254618.php");
+		posts.add("254619.php");
+		posts.add("254620.php");
+		posts.add("254624.php");
+		posts.add("254614.php");
+		posts.add("254622.php");
+		posts.add("254623.php");
+		posts.add("254613.php");
+		posts.add("254621.php");
+		posts.add("254612.php");
+		posts.add("254611.php");
+		
+		posts.add("254599.php");
+		posts.add("254600.php");
+		posts.add("254601.php");
+		posts.add("254606.php");
+		posts.add("254607.php");
+
+		return posts;
+	}
+
+	private List<String> listByDay() {
+		List<String> days = new LinkedList<>();
+		Document doc = connect(BASE_URL);
+
+		// dummy
+		days.add("2023/05/");
+		days.add("2023/04/");
+
+		return days;
+	}
+
+	private Document connect(String url) {
+		Document doc = null;
+		try {
+			doc = Jsoup.connect(url).get();
+		} catch (IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+		return doc;
+	}
+
+	private Post scrap(String url) {
 		Post post = new Post();
 		Document doc = connect(url);
 
@@ -112,20 +172,6 @@ public class PageScrapper {
 			post.setOriginal("Esse é o e-mail de resposta");
 		}
 	}
-
-	/**
-	 * Método para criar conexão com o html utilizando a biblioteca Jsoup
-	 * 
-	 * @param passando a String url como paramentro
-	 * @return Retorna o Documento
-	 */
-	private Document connect(String url) {
-		Document doc = null;
-		try {
-			doc = Jsoup.connect(url).get();
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-		return doc;
-	}
 }
+	
+
