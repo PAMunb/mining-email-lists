@@ -64,7 +64,7 @@ public class PageScrapper {
 	 */
 	public List<Post> execute() {
 		List<Post> posts = new LinkedList();
-		List<String> urls = new LinkedList();
+		List<String> urls = Teste();
 			for (String url : urls) {
 				Post post = scrap(url);
 //				posts.add(url);
