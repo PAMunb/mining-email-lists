@@ -67,7 +67,7 @@ public class PageScrapper {
 		List<String> urls = Teste();
 			for (String url : urls) {
 				Post post = scrap(url);
-//				posts.add(url);
+				posts.add(post);
 			}
 			return posts;
 		}
