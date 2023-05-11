@@ -11,67 +11,23 @@ import org.jsoup.select.Elements;
 
 import unb.com.entities.Post;
 
+/**
+ * Classe
+ *
+ */
 public class PageScrapper {
 	private static final String BASE_URL = "https://lists.boost.org/Archives/boost/";
 
 	public static void main(String[] args) {
-		new PageScrapper().execute().forEach(System.out::println);
+//		new PageScrapper().execute().forEach(System.out::println);
+		Teste();
 	}
 
-	public List<Post> execute() {
-		List<Post> posts = new LinkedList<>();
-		for (String day : listByDay()) {
-			String urlDay = BASE_URL + day;
-			for (String postId : listPosts(urlDay)) {
-				String urlPost = urlDay + postId;
-				Post post = scrap(urlPost);
-				posts.add(post);
-			}
-		}
-		return posts;
-	}
-
-	private List<String> listPosts(String url) {
-		List<String> posts = new LinkedList();
-
-		Document doc = connect(url);
-
-		posts.add("254599.php");
-		posts.add("254615.php");
-		posts.add("254616.php");
-		posts.add("254618.php");
-		posts.add("254619.php");
-		posts.add("254620.php");
-		posts.add("254624.php");
-		posts.add("254614.php");
-		posts.add("254622.php");
-		posts.add("254623.php");
-		posts.add("254613.php");
-		posts.add("254621.php");
-		posts.add("254612.php");
-		posts.add("254611.php");
-		
-		posts.add("254599.php");
-		posts.add("254600.php");
-		posts.add("254601.php");
-		posts.add("254606.php");
-		posts.add("254607.php");
-
-		return posts;
-	}
-
-	private List<String> listByDay() {
-		List<String> days = new LinkedList<>();
-		Document doc = connect(BASE_URL);
-
-		// dummy
-		days.add("2023/05/");
-		days.add("2023/04/");
-
-		return days;
-	}
-
-	private Document connect(String url) {
+	/**
+	 * @param url
+	 * @return
+	 */
+	private static Document connect(String url) {
 		Document doc = null;
 		try {
 			doc = Jsoup.connect(url).get();
@@ -80,6 +36,41 @@ public class PageScrapper {
 		}
 		return doc;
 	}
+
+	private static List<String> Teste() {
+		Document doc = connect(BASE_URL);
+		Elements tables = doc.select("table");
+		List<String> urls = new LinkedList<>();
+		for (Element table : tables) {
+//			System.out.println(table);
+			Elements tdTags = table.select("tbody > tr > td:nth-child(4)");
+//			System.out.println(tdTags);
+			for (Element tag : tdTags) {
+//				System.out.println(tag.select("a").text());
+				if (tag.select("a").text().toString().endsWith("Thread")) {
+					urls.add(BASE_URL + tag.select("a").attr("href"));
+
+				}
+			}
+
+		}
+//		System.out.println(urls);
+		return urls;
+
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Post> execute() {
+		List<Post> posts = new LinkedList();
+		List<String> urls = new LinkedList();
+			for (String url : urls) {
+				Post post = scrap(url);
+//				posts.add(url);
+			}
+			return posts;
+		}
 
 	private Post scrap(String url) {
 		Post post = new Post();
@@ -173,5 +164,47 @@ public class PageScrapper {
 		}
 	}
 }
-	
 
+
+//private List<String> listPosts(String url) {
+//List<String> posts = new LinkedList();
+//
+//Document doc = connect(url);
+//
+//posts.add("254599.php");
+//posts.add("254615.php");
+//posts.add("254616.php");
+//posts.add("254618.php");
+//posts.add("254619.php");
+//posts.add("254620.php");
+//posts.add("254624.php");
+//posts.add("254614.php");
+//posts.add("254622.php");
+//posts.add("254623.php");
+//posts.add("254613.php");
+//posts.add("254621.php");
+//posts.add("254612.php");
+//posts.add("254611.php");
+//
+//posts.add("254599.php");
+//posts.add("254600.php");
+//posts.add("254601.php");
+//posts.add("254606.php");
+//posts.add("254607.php");
+//
+//return posts;
+//}
+//
+///**
+//* @return
+//*/
+//private List<String> listByDay() {
+//List<String> days = new LinkedList<>();
+//Document doc = connect(BASE_URL);
+//
+//// dummy
+//days.add("2023/05/");
+//days.add("2023/04/");
+//
+//return days;
+//}
