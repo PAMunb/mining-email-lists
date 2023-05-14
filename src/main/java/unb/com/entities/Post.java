@@ -12,6 +12,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Classe model com seus respectivos atributos. Getters/setters/hashcode and
+ * equals sendo gerados automaticamente e implícitamente pelo lombok. Anotação
+ * indicando que é uma entidade do bando de dados.
+ *
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +26,9 @@ import lombok.NoArgsConstructor;
 public class Post implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * Id sendo gerado automaticamente com a anotação @GeneratedValue
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;

@@ -1,6 +1,5 @@
 package unb.com.scrapymailists;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,34 +10,37 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import unb.com.connection.ConnectionJsoup;
 import unb.com.entities.Post;
 
 /**
- * Classe
+ * 
  *
  */
-public class PageScrapper {
+public class PageScrapper extends ConnectionJsoup {
 	private static final String BASE_URL = "https://lists.boost.org/Archives/boost/";
 
-	public static void main(String[] args) {
-		// new PageScrapper().execute().forEach(System.out::println);
-		execute();
-	}
-
+	
 	/**
 	 * @param url
 	 * @return
 	 */
-	private static Document connect(String url) {
-		Document doc = null;
-		try {
-			doc = Jsoup.connect(url).get();
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-		return doc;
-	}
+	private static Post scrap(String url) {
+		Post post = new Post();
+		Document doc = connect(url);
 
+		retrieveAuthorAndDate(doc, post);
+		retrieveTitle(doc, post);
+		retrieveBody(doc, post);
+
+		retrieveIsOriginal(doc, post);
+
+		return post;
+	}
+	
+	/**
+	 * @return
+	 */
 	private static List<String> getLinksByThread() {
 		Document doc = connect(BASE_URL);
 		Elements tables = doc.select("table");
@@ -54,6 +56,9 @@ public class PageScrapper {
 		return urls;
 	}
 
+	/**
+	 * @return
+	 */
 	private static Set<String> getLinksMessages() {
 		Set<String> msgs = new HashSet<String>();
 		List<String> urls = getLinksByThread();
@@ -65,11 +70,14 @@ public class PageScrapper {
 			}
 			break;
 		}
-		// msgs.forEach(t -> System.out.println(t));
 		System.out.println(msgs.size());
 		return msgs;
 	}
 
+	/**
+	 * @param doc
+	 * @return
+	 */
 	public static Elements extractLiTags(Document doc) {
 		Elements liTags = new Elements();
 		Element ulParent = doc.select("ul").first();
@@ -101,43 +109,30 @@ public class PageScrapper {
 		return posts;
 	}
 
-	private static Post scrap(String url) {
-		Post post = new Post();
-		Document doc = connect(url);
-
-		retrieveAuthorAndDate(doc, post);
-		retrieveTitle(doc, post);
-		retrieveBody(doc, post);
-
-		retrieveIsOriginal(doc, post);
-
-		return post;
-	}
-
 	/**
-	 * Retorna o autor e a data do HTML presente na em "body p"
+	 * Método que retorna o autor e a data do HTML presente em "body p"
 	 * 
 	 * @param passando o doc como parâmentro
 	 * @param passando o post como parâmetro
 	 */
 	private static void retrieveAuthorAndDate(Document doc, Post post) {
 		Element element = doc.select("body p").first();
-		String frase = element.text();
+		String phrase = element.text();
 
 		// Retira a tag EM
 		element.select("em").remove();
-		frase = element.text();
+		phrase = element.text();
 
 		// Divide a frase em duas partes
-		int index = frase.length() / 2;
-		String nome = frase.substring(0, index - 2);
-		String data = frase.substring(index - 1);
+		int index = phrase.length() / 2;
+		String name = phrase.substring(0, index - 2);
+		String date = phrase.substring(index - 1);
 
 		// System.out.println("Autor: " + nome);
 		// System.out.println("Date:" + data);
 
-		post.setName(nome);
-		post.setDate(data);
+		post.setName(name);
+		post.setDate(date);
 	}
 
 	/**
@@ -149,9 +144,9 @@ public class PageScrapper {
 	private static void retrieveTitle(Document doc, Post post) {
 		Elements title = doc.select("title");
 		for (Element t : title) {
-			String texto = t.text();
+			String text = t.text();
 			// System.out.println("Assunto: " + texto);
-			post.setTitle(texto);
+			post.setTitle(text);
 		}
 	}
 
@@ -162,13 +157,13 @@ public class PageScrapper {
 	 * @param passando o post como parâmetro
 	 */
 	private static void retrieveBody(Document doc, Post post) {
-		Elements paragrafos = doc.select("p");
-		for (Element paragrafo : paragrafos) {
-			String texto = paragrafo.text().trim();
-			if (!texto.isEmpty()) {
+		Elements paragraphs = doc.select("p");
+		for (Element paragraph : paragraphs) {
+			String text = paragraph.text().trim();
+			if (!text.isEmpty()) {
 				// System.out.println("corpo do e-mail");
-				System.out.println(texto);
-				post.setCorpo(texto);
+				System.out.println(text);
+				post.setCorpo(text);
 			}
 		}
 	}
@@ -182,14 +177,14 @@ public class PageScrapper {
 	 * @param passando o post como parâmetro
 	 */
 	private static void retrieveIsOriginal(Document doc, Post post) {
-		String termoBuscado = "Reply";
+		String searchTerm = "Reply";
 		String html = doc.html();
-		if (html.contains(termoBuscado)) {
-			System.out.println("Esse é o e-mail original");
-			post.setOriginal("Esse é o e-mail original");
+		if (html.contains(searchTerm)) {
+			System.out.println("This is the original email");
+			post.setOriginal("This is the original email");
 		} else {
-			System.out.println("Esse é o e-mail de resposta");
-			post.setOriginal("Esse é o e-mail de resposta");
+			System.out.println("This is the reply email");
+			post.setOriginal("This is the reply email");
 		}
 	}
 
