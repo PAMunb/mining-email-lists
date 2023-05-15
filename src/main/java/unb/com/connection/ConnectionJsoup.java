@@ -15,8 +15,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ConnectionJsoup {
 
+	protected static final String BASE_URL = "https://lists.boost.org/Archives/boost/";
 	/**
-	 * Esse é um método que utiliza a biblioteca Jsoup para fazer uma conexão com
+	 * Método que utiliza a biblioteca Jsoup para fazer uma conexão com
 	 * uma página HTML
 	 * 
 	 * @param passando a url como parâmetro

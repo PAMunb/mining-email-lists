@@ -1,3 +1,12 @@
-FROM openjdk
-COPY ./target/*.jar spring-application.jar
-ENTRYPOINT [ "java", "-jar", "/spring-application.jar" ]
+FROM eclipse-temurin
+FROM openjdk:8
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app.jar"]
+
+FROM eclipse-temurin
+WORKDIR /app
+ 
+ 
+CMD ["./mvnw", "spring-boot:run"]

@@ -18,7 +18,6 @@ import unb.com.entities.Post;
  *
  */
 public class PageScrapper extends ConnectionJsoup {
-	private static final String BASE_URL = "https://lists.boost.org/Archives/boost/";
 
 	
 	/**
@@ -163,7 +162,7 @@ public class PageScrapper extends ConnectionJsoup {
 			if (!text.isEmpty()) {
 				// System.out.println("corpo do e-mail");
 				System.out.println(text);
-				post.setCorpo(text);
+				post.setBody(text);
 			}
 		}
 	}
