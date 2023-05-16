@@ -20,7 +20,7 @@ public class ConnectionJsoup {
 	 * Método que utiliza a biblioteca Jsoup para fazer uma conexão com
 	 * uma página HTML
 	 * 
-	 * @param passando a url como parâmetro
+	 * @param url passando a url como parâmetro
 	 * @return retorna o HTML da página em formato de documento
 	 */
 	protected static Document connect(String url) {

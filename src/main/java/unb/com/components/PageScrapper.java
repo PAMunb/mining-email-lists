@@ -1,4 +1,4 @@
-package unb.com.scrapymailists;
+package unb.com.components;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -9,14 +9,16 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
 
 import unb.com.connection.ConnectionJsoup;
-import unb.com.entities.Post;
+import unb.com.model.Post;
 
 /**
  * 
  *
  */
+@Component
 public class PageScrapper extends ConnectionJsoup {
 
 	
@@ -111,8 +113,8 @@ public class PageScrapper extends ConnectionJsoup {
 	/**
 	 * Método que retorna o autor e a data do HTML presente em "body p"
 	 * 
-	 * @param passando o doc como parâmentro
-	 * @param passando o post como parâmetro
+	 * @param doc passando o doc como parâmentro
+	 * @param post passando o post como parâmetro
 	 */
 	private static void retrieveAuthorAndDate(Document doc, Post post) {
 		Element element = doc.select("body p").first();
@@ -137,8 +139,8 @@ public class PageScrapper extends ConnectionJsoup {
 	/**
 	 * Retorna o corpo do HTML presente em "title"
 	 * 
-	 * @param passando o doc como parâmentro
-	 * @param passando o post como parâmetro
+	 * @param doc passando o doc como parâmentro
+	 * @param post passando o post como parâmetro
 	 */
 	private static void retrieveTitle(Document doc, Post post) {
 		Elements title = doc.select("title");
@@ -152,8 +154,8 @@ public class PageScrapper extends ConnectionJsoup {
 	/**
 	 * Retorna o corpo do HTML presente na tag "p"
 	 * 
-	 * @param passando o doc como parâmentro
-	 * @param passando o post como parâmetro
+	 * @param doc passando o doc como parâmentro
+	 * @param post passando o post como parâmetro
 	 */
 	private static void retrieveBody(Document doc, Post post) {
 		Elements paragraphs = doc.select("p");
@@ -172,8 +174,8 @@ public class PageScrapper extends ConnectionJsoup {
 	 * Busca o termo "reply" presente no HTML e retorna se é o e-mail original ou de
 	 * resposta
 	 * 
-	 * @param passando o doc como parâmentro
-	 * @param passando o post como parâmetro
+	 * @param doc passando o doc como parâmentro
+	 * @param post passando o post como parâmetro
 	 */
 	private static void retrieveIsOriginal(Document doc, Post post) {
 		String searchTerm = "Reply";
