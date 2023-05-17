@@ -1,4 +1,4 @@
-package unb.com.connection;
+package br.unb.scrap.components;
 
 import java.io.IOException;
 
@@ -12,10 +12,10 @@ import org.springframework.context.annotation.Configuration;
  * scrapping da página.
  *
  */
-@Configuration
+//@Configuration
 public class ConnectionJsoup {
 
-	protected static final String BASE_URL = "https://lists.boost.org/Archives/boost/";
+	public static final String BASE_URL = "https://lists.boost.org/Archives/boost/";
 	/**
 	 * Método que utiliza a biblioteca Jsoup para fazer uma conexão com
 	 * uma página HTML
@@ -23,7 +23,7 @@ public class ConnectionJsoup {
 	 * @param url passando a url como parâmetro
 	 * @return retorna o HTML da página em formato de documento
 	 */
-	protected static Document connect(String url) {
+	protected Document connect(String url) {
 		Document doc = null;
 		try {
 			doc = Jsoup.connect(url).get();

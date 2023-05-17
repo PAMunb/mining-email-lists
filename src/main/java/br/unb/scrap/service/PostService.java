@@ -1,14 +1,14 @@
-package unb.com.service;
+package br.unb.scrap.service;
 
 import java.util.Collection;
 
-import unb.com.model.Post;
+import br.unb.scrap.model.Post;
 
 /**
  * Classe de servico do @Post
  *
  */
-public interface PostService {
+public interface PostService<I> {
 	/**
 	 * @param Post
 	 */
@@ -18,12 +18,12 @@ public interface PostService {
 	 * @param id
 	 * @param Post
 	 */
-	public abstract void updatePost(String id, Post Post);
+	public abstract void updatePost(Post Post);
 
 	/**
 	 * @param id
 	 */
-	public abstract void deletePost(String id);
+	public abstract void deletePost(I id);
 
 	/**
 	 * @return

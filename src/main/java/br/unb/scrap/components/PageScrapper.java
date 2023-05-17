@@ -1,4 +1,4 @@
-package unb.com.components;
+package br.unb.scrap.components;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,8 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
-import unb.com.connection.ConnectionJsoup;
-import unb.com.model.Post;
+import br.unb.scrap.model.Post;
 
 /**
  * 
@@ -26,7 +25,7 @@ public class PageScrapper extends ConnectionJsoup {
 	 * @param url
 	 * @return
 	 */
-	private static Post scrap(String url) {
+	private Post scrap(String url) {
 		Post post = new Post();
 		Document doc = connect(url);
 
@@ -42,7 +41,7 @@ public class PageScrapper extends ConnectionJsoup {
 	/**
 	 * @return
 	 */
-	private static List<String> getLinksByThread() {
+	private List<String> getLinksByThread() {
 		Document doc = connect(BASE_URL);
 		Elements tables = doc.select("table");
 		List<String> urls = new LinkedList<>();
@@ -60,7 +59,7 @@ public class PageScrapper extends ConnectionJsoup {
 	/**
 	 * @return
 	 */
-	private static Set<String> getLinksMessages() {
+	private Set<String> getLinksMessages() {
 		Set<String> msgs = new HashSet<String>();
 		List<String> urls = getLinksByThread();
 		for (String url : urls) {
@@ -79,7 +78,7 @@ public class PageScrapper extends ConnectionJsoup {
 	 * @param doc
 	 * @return
 	 */
-	public static Elements extractLiTags(Document doc) {
+	private Elements extractLiTags(Document doc) {
 		Elements liTags = new Elements();
 		Element ulParent = doc.select("ul").first();
 		Elements lis = ulParent.select("li");
@@ -98,7 +97,7 @@ public class PageScrapper extends ConnectionJsoup {
 	/**
 	 * @return
 	 */
-	public static List<Post> execute() {
+	public List<Post> execute() {
 		List<Post> posts = new LinkedList<>();
 		Set<String> urls = getLinksMessages();
 		for (String url : urls) {
@@ -116,7 +115,7 @@ public class PageScrapper extends ConnectionJsoup {
 	 * @param doc passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
-	private static void retrieveAuthorAndDate(Document doc, Post post) {
+	private void retrieveAuthorAndDate(Document doc, Post post) {
 		Element element = doc.select("body p").first();
 		String phrase = element.text();
 
@@ -142,7 +141,7 @@ public class PageScrapper extends ConnectionJsoup {
 	 * @param doc passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
-	private static void retrieveTitle(Document doc, Post post) {
+	private void retrieveTitle(Document doc, Post post) {
 		Elements title = doc.select("title");
 		for (Element t : title) {
 			String text = t.text();
@@ -157,7 +156,7 @@ public class PageScrapper extends ConnectionJsoup {
 	 * @param doc passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
-	private static void retrieveBody(Document doc, Post post) {
+	private void retrieveBody(Document doc, Post post) {
 		Elements paragraphs = doc.select("p");
 		for (Element paragraph : paragraphs) {
 			String text = paragraph.text().trim();
@@ -177,7 +176,7 @@ public class PageScrapper extends ConnectionJsoup {
 	 * @param doc passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
-	private static void retrieveIsOriginal(Document doc, Post post) {
+	private void retrieveIsOriginal(Document doc, Post post) {
 		String searchTerm = "Reply";
 		String html = doc.html();
 		if (html.contains(searchTerm)) {

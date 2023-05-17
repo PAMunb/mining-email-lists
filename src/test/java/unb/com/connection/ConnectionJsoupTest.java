@@ -9,6 +9,8 @@ import org.jsoup.nodes.Document;
 import org.junit.Assert;
 import org.junit.Test;
 
+import br.unb.scrap.components.ConnectionJsoup;
+
 public class ConnectionJsoupTest {
 
 	ConnectionJsoup cj = new ConnectionJsoup();
