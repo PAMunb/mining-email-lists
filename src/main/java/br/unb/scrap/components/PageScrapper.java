@@ -20,7 +20,19 @@ import br.unb.scrap.model.Post;
 @Component
 public class PageScrapper extends ConnectionJsoup {
 
-	
+	public List<Post> execute() {
+		List<Post> posts = new LinkedList<>();
+		for (String day : listByDay()) {
+			String urlDay = BASE_URL + day;
+			for (String postId : listPosts(urlDay)) {
+				String urlPost = urlDay + postId;
+				Post post = scrap(urlPost);
+				posts.add(post);
+			}
+		}
+		return posts;
+	}
+
 	/**
 	 * @param url
 	 * @return
@@ -37,7 +49,29 @@ public class PageScrapper extends ConnectionJsoup {
 
 		return post;
 	}
-	
+
+	private List<String> listPosts(String url) {
+		List<String> posts = new LinkedList();
+
+		Document doc = connect(url);
+
+		posts.add("254599.php");
+		posts.add("254600.php");
+		posts.add("254601.php");
+
+		return posts;
+	}
+
+	private List<String> listByDay() {
+		List<String> days = new LinkedList<>();
+		Document doc = connect(BASE_URL);
+
+		// dummy
+		days.add("2023/05/");
+
+		return days;
+	}
+
 	/**
 	 * @return
 	 */
@@ -86,7 +120,6 @@ public class PageScrapper extends ConnectionJsoup {
 			liTags.add(li);
 			Element ul = li.select("ul").first();
 			if (ul != null) {
-				// System.out.println(ul.toString());
 				Document newDoc = Jsoup.parse(ul.toString());
 				liTags.addAll(extractLiTags(newDoc));
 			}
@@ -94,25 +127,25 @@ public class PageScrapper extends ConnectionJsoup {
 		return liTags;
 	}
 
-	/**
-	 * @return
-	 */
-	public List<Post> execute() {
-		List<Post> posts = new LinkedList<>();
-		Set<String> urls = getLinksMessages();
-		for (String url : urls) {
-			Post post = scrap(url);
-			posts.add(post);
-			break;
-		}
-		System.out.println(posts);
-		return posts;
-	}
+//	/**
+//	 * @return
+//	 */
+//	public List<Post> execute() {
+//		List<Post> posts = new LinkedList<>();
+//		Set<String> urls = getLinksMessages();
+//		for (String url : urls) {
+//			Post post = scrap(url);
+//			posts.add(post);
+//			break;
+//		}
+//		System.out.println(posts);
+//		return posts;
+//	}
 
 	/**
 	 * Método que retorna o autor e a data do HTML presente em "body p"
 	 * 
-	 * @param doc passando o doc como parâmentro
+	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
 	private void retrieveAuthorAndDate(Document doc, Post post) {
@@ -138,7 +171,7 @@ public class PageScrapper extends ConnectionJsoup {
 	/**
 	 * Retorna o corpo do HTML presente em "title"
 	 * 
-	 * @param doc passando o doc como parâmentro
+	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
 	private void retrieveTitle(Document doc, Post post) {
@@ -153,7 +186,7 @@ public class PageScrapper extends ConnectionJsoup {
 	/**
 	 * Retorna o corpo do HTML presente na tag "p"
 	 * 
-	 * @param doc passando o doc como parâmentro
+	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
 	private void retrieveBody(Document doc, Post post) {
@@ -173,7 +206,7 @@ public class PageScrapper extends ConnectionJsoup {
 	 * Busca o termo "reply" presente no HTML e retorna se é o e-mail original ou de
 	 * resposta
 	 * 
-	 * @param doc passando o doc como parâmentro
+	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
 	private void retrieveIsOriginal(Document doc, Post post) {
