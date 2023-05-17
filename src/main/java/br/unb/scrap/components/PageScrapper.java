@@ -20,19 +20,6 @@ import br.unb.scrap.model.Post;
 @Component
 public class PageScrapper extends ConnectionJsoup {
 
-	public List<Post> execute() {
-		List<Post> posts = new LinkedList<>();
-		for (String day : listByDay()) {
-			String urlDay = BASE_URL + day;
-			for (String postId : listPosts(urlDay)) {
-				String urlPost = urlDay + postId;
-				Post post = scrap(urlPost);
-				posts.add(post);
-			}
-		}
-		return posts;
-	}
-
 	/**
 	 * @param url
 	 * @return
@@ -48,28 +35,6 @@ public class PageScrapper extends ConnectionJsoup {
 		retrieveIsOriginal(doc, post);
 
 		return post;
-	}
-
-	private List<String> listPosts(String url) {
-		List<String> posts = new LinkedList();
-
-		Document doc = connect(url);
-
-		posts.add("254599.php");
-		posts.add("254600.php");
-		posts.add("254601.php");
-
-		return posts;
-	}
-
-	private List<String> listByDay() {
-		List<String> days = new LinkedList<>();
-		Document doc = connect(BASE_URL);
-
-		// dummy
-		days.add("2023/05/");
-
-		return days;
 	}
 
 	/**
@@ -91,9 +56,29 @@ public class PageScrapper extends ConnectionJsoup {
 	}
 
 	/**
+	 * @param doc
 	 * @return
 	 */
-	private Set<String> getLinksMessages() {
+	private Elements extractLiTags(Document doc) {
+		Elements liTags = new Elements();
+		Element ulParent = doc.select("ul").first();
+		Elements lis = ulParent.select("li");
+		for (Element li : lis) {
+			liTags.add(li);
+			Element ul = li.select("ul").first();
+			if (ul != null) {
+				// System.out.println(ul.toString());
+				Document newDoc = Jsoup.parse(ul.toString());
+				liTags.addAll(extractLiTags(newDoc));
+			}
+		}
+		return liTags;
+	}
+
+	/**
+	 * @return
+	 */
+	public Set<String> getLinksMessages() {
 		Set<String> msgs = new HashSet<String>();
 		List<String> urls = getLinksByThread();
 		for (String url : urls) {
@@ -109,38 +94,19 @@ public class PageScrapper extends ConnectionJsoup {
 	}
 
 	/**
-	 * @param doc
 	 * @return
 	 */
-	private Elements extractLiTags(Document doc) {
-		Elements liTags = new Elements();
-		Element ulParent = doc.select("ul").first();
-		Elements lis = ulParent.select("li");
-		for (Element li : lis) {
-			liTags.add(li);
-			Element ul = li.select("ul").first();
-			if (ul != null) {
-				Document newDoc = Jsoup.parse(ul.toString());
-				liTags.addAll(extractLiTags(newDoc));
-			}
-		}
-		return liTags;
-	}
-
-//	/**
-//	 * @return
-//	 */
-//	public List<Post> execute() {
-//		List<Post> posts = new LinkedList<>();
-//		Set<String> urls = getLinksMessages();
-//		for (String url : urls) {
-//			Post post = scrap(url);
-//			posts.add(post);
+	public List<Post> execute() {
+		List<Post> posts = new LinkedList<>();
+		Set<String> urls = getLinksMessages();
+		for (String url : urls) {
+			Post post = scrap(url);
+			posts.add(post);
 //			break;
-//		}
-//		System.out.println(posts);
-//		return posts;
-//	}
+		}
+		System.out.println(posts);
+		return posts;
+	}
 
 	/**
 	 * Método que retorna o autor e a data do HTML presente em "body p"

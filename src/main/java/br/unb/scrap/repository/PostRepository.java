@@ -12,12 +12,5 @@ import br.unb.scrap.model.Post;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-//	Post findByName(String name);
-//
-//	List<Post> findAll();
-//
-//	Optional<Post> findById(String id);
-//
-//	List<Post> findByTitle(String title);
 
 }

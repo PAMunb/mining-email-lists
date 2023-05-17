@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * Classe de configuração que utiliza o Jsoup, uma biblioteca java, que seve
