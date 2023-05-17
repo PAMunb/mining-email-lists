@@ -1,4 +1,4 @@
-package unb.com.connection;
+package br.unb.scrap.components;
 
 import static org.junit.Assert.assertNotNull;
 

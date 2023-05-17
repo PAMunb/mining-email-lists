@@ -1,4 +1,4 @@
-package unb.com.application;
+package br.unb.scrap;
 
 import org.junit.Test;
 

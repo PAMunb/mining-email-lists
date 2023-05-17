@@ -1,4 +1,4 @@
-package unb.com.scrapymailists;
+package unb.scrap.components;
 
 import static org.junit.Assert.assertTrue;
 
