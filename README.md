@@ -7,7 +7,7 @@ Para persistência de dados foram utilizados o JPA e Hibernate. Enquanto, o banc
 
 Certifique-se de ter as seguintes dependências instaladas em seu ambiente de desenvolvimento:
 
-- Java Development Kit (JDK) 11 ou superior; 
+- Java Development Kit (JDK) 17; 
 - Docker e Docker Compose;
 - Lombok 
 

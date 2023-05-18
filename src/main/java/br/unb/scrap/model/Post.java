@@ -54,6 +54,6 @@ public class Post implements Serializable {
 	/**
 	 * Indica se a mensagem é original ou um reply.
 	 */
-	private String original;
+	private boolean original;
 
 }

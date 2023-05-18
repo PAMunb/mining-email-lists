@@ -22,7 +22,7 @@ public class PostTest {
 
 	@Test
 	public void testSetAndGetName() {
-		String name = "Author";
+		String name = "Louis Tatta";
 		post.setName(name);
 		Assertions.assertEquals(name, post.getName(), "The name was not set correctly.");
 	}
@@ -37,7 +37,7 @@ public class PostTest {
 
 	@Test
 	public void testSetAndGetDate() {
-		String date = "04-05-1998";
+		String date = "04-05-2005";
 		post.setDate(date);
 		Assertions.assertEquals(date, post.getDate(), "The date was not defined correctly.");
 	}
@@ -51,19 +51,19 @@ public class PostTest {
 
 	@Test
 	public void testSetAndGetOriginal() {
-		String original = "original";
+		boolean original = false;
 		post.setOriginal(original);
-		Assertions.assertEquals(original, post.getOriginal(), "Message type not set correctly.");
+		Assertions.assertEquals(original, post.isOriginal(), "Message type not set correctly.");
 	}
 
 	@Test
 	public void testToString() {
 		Long id = 1L;
-		String name = "Author";
+		String name = "Louis Tatta";
 		String date = "04-05-1998";
 		String title = "Software Rejuvenation";
 		String body = "it is a phenomenon that leads to burnout...software system failure";
-		String original = "original";
+		boolean original = false;
 
 		post.setId(id);
 		post.setName(name);
@@ -72,7 +72,7 @@ public class PostTest {
 		post.setBody(body);
 		post.setOriginal(original);
 
-		String expectedString = "Post(id=1, name=Author, date=04-05-1998, title=Software Rejuvenation, body=it is a phenomenon that leads to burnout...software system failure, original=original)";
+		String expectedString = "Post(id=1, name=Louis Tatta, date=04-05-1998, title=Software Rejuvenation, body=it is a phenomenon that leads to burnout...software system failure, original=false)";
 		Assertions.assertEquals(expectedString, post.toString(), "String representation is not correct.");
 	}
 }

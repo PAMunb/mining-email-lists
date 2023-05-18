@@ -196,22 +196,25 @@ public class PageScrapper extends ConnectionJsoup {
 
 	/**
 	 * 
-	 * Método que verifica se a palavra-chave ("Reply") está presente no conteúdo
-	 * HTML de um documento. Se for encontrada, define se o post é um email original
-	 * e se não for encontrada, define que é um email de resposta
+	 * Método booleano que verifica se a palavra-chave ("Reply") está presente no
+	 * conteúdo HTML de um documento. Se for encontrada, define se o post é um email
+	 * original (true) e se não for encontrada, define que é um email de resposta
+	 * (false).
 	 * 
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
-	private void retrieveIsOriginal(Document doc, Post post) {
+	private boolean retrieveIsOriginal(Document doc, Post post) {
 		String searchTerm = "Reply";
 		String html = doc.html();
 		if (html.contains(searchTerm)) {
-			System.out.println("This is the original email");
-			post.setOriginal("This is the original email");
+			System.out.println("This is the original email" + " >>>>>>" + true);
+			post.setOriginal(true);
+			return true;
 		} else {
-			System.out.println("This is the reply email");
-			post.setOriginal("This is the reply email");
+			System.out.println("This is the reply email" + " >>>>>>" + false);
+			post.setOriginal(false);
+			return false;
 		}
 	}
 
