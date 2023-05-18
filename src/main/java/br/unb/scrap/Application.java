@@ -24,6 +24,11 @@ public class Application implements CommandLineRunner {
 	@Autowired
 	private PageScrapper scrapper;
 
+	/**
+	 * Esta classe é o ponto de entrada para a execução da aplicação
+	 * 
+	 * @param args O parâmentro args
+	 */
 	public static void main(String[] args) {
 		System.err.println(">>>>>> ");
 		SpringApplication.run(Application.class, args);
@@ -39,6 +44,10 @@ public class Application implements CommandLineRunner {
 		System.err.println("++++++++++++++++++++++");
 	}
 
+	/**
+	 * Método que serve para popular o banco de dados. Salva os posts recuperados
+	 * pelo método chamado execute presente na classe @PageScrapper
+	 */
 	public void fillDataBase() {
 		List<Post> posts = scrapper.execute();
 		for (Post post : posts) {

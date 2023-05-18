@@ -14,15 +14,19 @@ import org.springframework.stereotype.Component;
 import br.unb.scrap.model.Post;
 
 /**
- * 
+ * Classe com anotação @Component, contém os métodos que fazem o scrapping das
+ * páginas HTML e estende a Classe de conexão com Jsoup
  *
  */
 @Component
 public class PageScrapper extends ConnectionJsoup {
 
 	/**
-	 * @param url
-	 * @return
+	 * Método responsável por fazer a extração de informações de uma página web com
+	 * base em uma URL fornecida
+	 * 
+	 * @param url Passando a url como parâmetro
+	 * @return Retorna um objeto do tipo Post contendo informações.
 	 */
 	private Post scrap(String url) {
 		Post post = new Post();
@@ -38,7 +42,10 @@ public class PageScrapper extends ConnectionJsoup {
 	}
 
 	/**
-	 * @return
+	 * método é responsável por obter os links das threads a partir de um documento
+	 * HTML, a partir da BASE_URL ou da url passada.
+	 * 
+	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
 	private List<String> getLinksByThread() {
 		Document doc = connect(BASE_URL);
@@ -56,8 +63,12 @@ public class PageScrapper extends ConnectionJsoup {
 	}
 
 	/**
-	 * @param doc
-	 * @return
+	 * Método é responsável por extrair as tags
+	 * <li>de um documento HTML.
+	 * 
+	 * @param doc passando o document como parâmentro
+	 * @return Retorna a coleção liTags contendo todas as tags
+	 *         <li>extraídas.
 	 */
 	private Elements extractLiTags(Document doc) {
 		Elements liTags = new Elements();
@@ -67,8 +78,8 @@ public class PageScrapper extends ConnectionJsoup {
 			liTags.add(li);
 			Element ul = li.select("ul").first();
 			if (ul != null) {
-				// System.out.println(ul.toString());
 				Document newDoc = Jsoup.parse(ul.toString());
+				// Chama recursivamente o método
 				liTags.addAll(extractLiTags(newDoc));
 			}
 		}
@@ -76,8 +87,12 @@ public class PageScrapper extends ConnectionJsoup {
 	}
 
 	/**
-	 * @return
+	 * Método é responsável por obter os links das mensagens a partir das URLs
+	 * das threads
+	 * 
+	 * @return Retorna um conjunto msgs contendo os links das mensagens extraídas.
 	 */
+
 	public Set<String> getLinksMessages() {
 		Set<String> msgs = new HashSet<String>();
 		List<String> urls = getLinksByThread();
@@ -94,7 +109,10 @@ public class PageScrapper extends ConnectionJsoup {
 	}
 
 	/**
-	 * @return
+	 * Método que percorre uma lista de URLs, faz a raspagem de dados dessas URLs
+	 * para criar objetos Post e armazena esses objetos em uma lista.
+	 * 
+	 * @return Retorna uma lista de objetos do tipoo Post
 	 */
 	public List<Post> execute() {
 		List<Post> posts = new LinkedList<>();
@@ -109,7 +127,10 @@ public class PageScrapper extends ConnectionJsoup {
 	}
 
 	/**
-	 * Método que retorna o autor e a data do HTML presente em "body p"
+	 * Método que extrai o autor e a data do post a partir do documento HTML
+	 * fornecido. Ele seleciona o primeiro elemento de parágrafo dentro do elemento
+	 * <body p>, remove as tags <em> desse elemento e divide o texto resultante em
+	 * duas partes para obter o nome do autor e a data do post
 	 * 
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
@@ -135,7 +156,9 @@ public class PageScrapper extends ConnectionJsoup {
 	}
 
 	/**
-	 * Retorna o corpo do HTML presente em "title"
+	 * Método que extrai o conteúdo do título do post a partir do documento HTML
+	 * fornecido. Ele seleciona o elemento de título no documento, obtém o texto
+	 * desse elemento e define esse texto como o título do post no objeto Post
 	 * 
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
@@ -150,7 +173,11 @@ public class PageScrapper extends ConnectionJsoup {
 	}
 
 	/**
-	 * Retorna o corpo do HTML presente na tag "p"
+	 * Método que extrai o conteúdo do corpo do post a partir do documento HTML
+	 * fornecido. Ele percorre todos os elementos de parágrafo
+	 * <p>
+	 * no documento, obtém o texto de cada parágrafo e define esse texto como o
+	 * corpo do post no objeto Post
 	 * 
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
@@ -169,8 +196,9 @@ public class PageScrapper extends ConnectionJsoup {
 
 	/**
 	 * 
-	 * Busca o termo "reply" presente no HTML e retorna se é o e-mail original ou de
-	 * resposta
+	 * Método que verifica se a palavra-chave ("Reply") está presente no conteúdo
+	 * HTML de um documento. Se for encontrada, define se o post é um email original
+	 * e se não for encontrada, define que é um email de resposta
 	 * 
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro

@@ -1,4 +1,4 @@
-package unb.scrap.components;
+package br.unb.scrap.components;
 
 import static org.junit.Assert.assertTrue;
 
