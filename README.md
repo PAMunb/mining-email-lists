@@ -55,4 +55,4 @@ Ex: `cd/…/mining-email-list `
 
 ____
 
-##### Obs:no repositório do projeto já um script chamado "run_bd.sh" que auxilia na criação do banco. 
+##### Obs:no repositório do projeto há um script chamado "run_bd.sh" que auxilia na criação do banco. 

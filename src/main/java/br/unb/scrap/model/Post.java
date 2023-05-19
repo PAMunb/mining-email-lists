@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 
 /**
  * Classe model com seus respectivos atributos. Getters/setters/hashcode and
- * equals sendo gerados automaticamente e implícitamente pelo lombok. Anotação
- * indicando que é uma entidade do banco de dados.
+ * equals sendo gerados automaticamente e implícitamente pelo lombok.
+ * Anotação @Entity indicando que é uma entidade do banco de dados.
  *
  */
 @Data
