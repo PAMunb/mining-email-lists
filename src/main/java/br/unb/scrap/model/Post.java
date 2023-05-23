@@ -2,6 +2,7 @@ package br.unb.scrap.model;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,11 +45,13 @@ public class Post implements Serializable {
 	/**
 	 * Título do Post.
 	 */
+	@Column(length = 255)
 	private String title;
 
 	/**
 	 * Texto presente no corpo do Post.
 	 */
+	@Column(columnDefinition = "TEXT")
 	private String body;
 
 	/**

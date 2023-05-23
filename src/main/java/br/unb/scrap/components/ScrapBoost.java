@@ -1,5 +1,6 @@
 package br.unb.scrap.components;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,17 +47,19 @@ public class ScrapBoost extends PageScrapper {
 					urls.add(BASE_URL + tag.select("a").attr("href"));
 				}
 			}
+			// break;
 		}
+		// System.out.println(urls);
 		return urls;
 	}
 
 	/**
 	 * Método é responsável por extrair as tags
-	 * <li>de um documento HTML.
+	 * li de um documento HTML.
 	 * 
 	 * @param doc passando o document como parâmentro
 	 * @return Retorna a coleção liTags contendo todas as tags
-	 *         <li>extraídas.
+	 *         li extraídas.
 	 */
 	protected Elements extractLiTags(Document doc) {
 		Elements liTags = new Elements();
@@ -70,6 +73,7 @@ public class ScrapBoost extends PageScrapper {
 				// Chama recursivamente o método
 				liTags.addAll(extractLiTags(newDoc));
 			}
+			// break;
 		}
 		return liTags;
 	}
@@ -108,7 +112,7 @@ public class ScrapBoost extends PageScrapper {
 		for (String url : urls) {
 			Post post = scrap(url);
 			posts.add(post);
-//			break;
+			// break;
 		}
 		System.out.println(posts);
 		return posts;
@@ -117,7 +121,7 @@ public class ScrapBoost extends PageScrapper {
 	/**
 	 * Método que extrai o autor e a data do post a partir do documento HTML
 	 * fornecido. Ele seleciona o primeiro elemento de parágrafo dentro do elemento
-	 * <body p>, remove as tags <em> desse elemento e divide o texto resultante em
+	 * body p, remove as tags em desse elemento e divide o texto resultante em
 	 * duas partes para obter o nome do autor e a data do post
 	 * 
 	 * @param doc  passando o doc como parâmentro
@@ -139,7 +143,7 @@ public class ScrapBoost extends PageScrapper {
 		// System.out.println("Autor: " + nome);
 		// System.out.println("Date:" + data);
 
-		post.setName(name);
+		post.setName(utf8EncodedString(name));
 		post.setDate(date);
 	}
 
@@ -156,14 +160,14 @@ public class ScrapBoost extends PageScrapper {
 		for (Element t : title) {
 			String text = t.text();
 			// System.out.println("Assunto: " + texto);
-			post.setTitle(text);
+			post.setTitle(utf8EncodedString(text));
 		}
 	}
 
 	/**
 	 * Método que extrai o conteúdo do corpo do post a partir do documento HTML
 	 * fornecido. Ele percorre todos os elementos de parágrafo
-	 * <p>
+	 * p
 	 * no documento, obtém o texto de cada parágrafo e define esse texto como o
 	 * corpo do post no objeto Post
 	 * 
@@ -171,15 +175,29 @@ public class ScrapBoost extends PageScrapper {
 	 * @param post passando o post como parâmetro
 	 */
 	protected void retrieveBody(Document doc, Post post) {
+		String tagBody = getStringBetweenTwoCharacters(doc.toString(), "<!-- body=\"start\" -->",
+				"<!-- body=\"end\" -->");
+		doc = Jsoup.parse(tagBody);
+		String body = "";
 		Elements paragraphs = doc.select("p");
 		for (Element paragraph : paragraphs) {
 			String text = paragraph.text().trim();
 			if (!text.isEmpty()) {
 				// System.out.println("corpo do e-mail");
-				System.out.println(text);
-				post.setBody(text);
+				body += text + "\n";
 			}
 		}
+		post.setBody(utf8EncodedString(body));
+		System.out.println(post.getBody());
+	}
+
+	protected String getStringBetweenTwoCharacters(String input, String from, String to) {
+		return input.substring(input.indexOf(from) + 1, input.lastIndexOf(to));
+	}
+
+	protected String utf8EncodedString(String str) {
+		byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
+		return new String(bytes, StandardCharsets.UTF_8);
 	}
 
 	/**
