@@ -166,8 +166,7 @@ public class ScrapBoost extends PageScrapper {
 
 	/**
 	 * Método que extrai o conteúdo do corpo do post a partir do documento HTML
-	 * fornecido. Ele percorre todos os elementos de parágrafo
-	 * p
+	 * fornecido. Ele obtém o texto entre as tags start e end do body.
 	 * no documento, obtém o texto de cada parágrafo e define esse texto como o
 	 * corpo do post no objeto Post
 	 * 
