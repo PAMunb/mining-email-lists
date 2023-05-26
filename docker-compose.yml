@@ -21,6 +21,8 @@ services:
       - MYSQL_DATABASE=scrap
       - MYSQL_USER=spring_user
       - MYSQL_PASSWORD=root
+    volumes:
+      - ./mycustom.cnf:/etc/mysql/conf.d/custom.cnf
 
 networks:
   springmysql-net:
