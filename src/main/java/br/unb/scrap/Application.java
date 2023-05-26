@@ -49,12 +49,15 @@ public class Application implements CommandLineRunner {
 	 * pelo método chamado execute presente na classe @PageScrapper
 	 */
 	public void fillDataBase() {
-		List<Post> posts = scrapper.execute();
-		for (Post post : posts) {
-			repo.save(post);
-			// repo.findAll();
+		try {
+			List<Post> posts = scrapper.execute();
+			for (Post post : posts) {
+				repo.save(post);
+				// repo.findAll();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
 	}
 
 }
