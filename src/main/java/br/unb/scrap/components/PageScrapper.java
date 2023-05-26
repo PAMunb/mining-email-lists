@@ -36,12 +36,10 @@ public abstract class PageScrapper extends ConnectionJsoup {
 	protected abstract List<String> getLinksByThread();
 
 	/**
-	 * Método é responsável por extrair as tags
-	 * li de um documento HTML.
+	 * Método é responsável por extrair as tags li de um documento HTML.
 	 * 
 	 * @param doc passando o document como parâmentro
-	 * @return Retorna a coleção liTags contendo todas as tags
-	 *         li extraídas.
+	 * @return Retorna a coleção liTags contendo todas as tags li extraídas.
 	 */
 	protected abstract Elements extractLiTags(Document doc);
 
@@ -57,8 +55,8 @@ public abstract class PageScrapper extends ConnectionJsoup {
 	/**
 	 * Método que extrai o autor e a data do post a partir do documento HTML
 	 * fornecido. Ele seleciona o primeiro elemento de parágrafo dentro do elemento
-	 * body p, remove as tags em desse elemento e divide o texto resultante em
-	 * duas partes para obter o nome do autor e a data do post
+	 * body p, remove as tags em desse elemento e divide o texto resultante em duas
+	 * partes para obter o nome do autor e a data do post
 	 * 
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
@@ -77,10 +75,9 @@ public abstract class PageScrapper extends ConnectionJsoup {
 
 	/**
 	 * Método que extrai o conteúdo do corpo do post a partir do documento HTML
-	 * fornecido. Ele percorre todos os elementos de parágrafo
-	 * p
-	 * no documento, obtém o texto de cada parágrafo e define esse texto como o
-	 * corpo do post no objeto Post
+	 * fornecido. Ele obtém o texto entre as tags start e end do body. no documento,
+	 * obtém o texto de cada parágrafo e define esse texto como o corpo do post no
+	 * objeto Post
 	 * 
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro

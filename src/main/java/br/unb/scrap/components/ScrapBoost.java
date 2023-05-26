@@ -252,8 +252,8 @@ public class ScrapBoost extends PageScrapper {
 	 * UTF-8 e, em seguida, cria uma nova string a partir desses bytes, também
 	 * usando a codificação UTF-8.
 	 * 
-	 * @param str A string
-	 * @return Retona codificada em UTF-8.
+	 * @param str  passando A string como parâmentro
+	 * @return Retona a String codificada em UTF-8.
 	 */
 	protected String utf8EncodedString(String str) {
 		try {
@@ -261,7 +261,7 @@ public class ScrapBoost extends PageScrapper {
 			return new String(bytes, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null; // Or any other appropriate action for error handling
+			return null; 
 		}
 	}
 
