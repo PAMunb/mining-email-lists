@@ -42,6 +42,32 @@ public class ScrapBoost extends PageScrapper {
 	}
 
 	/**
+	 * método é responsável por obter os links dos posts por data a partir de um documento
+	 * HTML, a partir da BASE_URL ou da url passada.
+	 * 
+	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
+	 */
+	protected List<String> getLinksByDate() {
+		List<String> urls = new LinkedList<>();
+		try {
+			Document doc = connect(BASE_URL);
+			Elements tables = doc.select("table");
+			for (Element table : tables) {
+				Elements tdTags = table.select("tbody > tr > td:nth-child(3)");
+				for (Element tag : tdTags) {
+					if (tag.select("a").text().toString().endsWith("Date")) {
+						urls.add(BASE_URL + tag.select("a").attr("href"));
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		//System.out.println(urls);
+		return urls;
+	}
+
+	/**
 	 * método é responsável por obter os links das threads a partir de um documento
 	 * HTML, a partir da BASE_URL ou da url passada.
 	 * 
@@ -80,13 +106,13 @@ public class ScrapBoost extends PageScrapper {
 			Elements lis = ulParent.select("li");
 			for (Element li : lis) {
 				liTags.add(li);
-				Element ul = li.select("ul").first();
+				/* Element ul = li.select("ul").first();
 				if (ul != null) {
 					Document newDoc = Jsoup.parse(ul.toString());
 					// Chama recursivamente o método
 					liTags.addAll(extractLiTags(newDoc));
 				}
-//	            break;
+//	            break; */
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -103,15 +129,16 @@ public class ScrapBoost extends PageScrapper {
 
 	public Set<String> getLinksMessages() {
 		Set<String> msgs = new HashSet<String>();
-		List<String> urls = getLinksByThread();
+		//List<String> urls = getLinksByThread();
+		List<String> urls = getLinksByDate();
 		for (String url : urls) {
 			try {
 				Document doc = connect(url);
 				for (Element li : extractLiTags(doc)) {
 					String link = li.select("a").attr("href");
-					msgs.add(url.replace("index.php", link));
+					msgs.add(url.replace("date.php", link));
 				}
-//	            break;
+	            break;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -160,13 +187,12 @@ public class ScrapBoost extends PageScrapper {
 			element.select("em").remove();
 			phrase = element.text();
 
-			// Divide a frase em duas partes
-			int index = phrase.length() / 2;
-			String name = phrase.substring(0, index - 2);
-			String date = phrase.substring(index - 1);
+			// Divide a frase em nome e data
+			String name = phrase.substring(0, phrase.indexOf("(") - 1);
+			String date = phrase.substring(phrase.indexOf("Date:"));
 
-			// System.out.println("Autor: " + nome);
-			// System.out.println("Date:" + data);
+			System.out.println("Autor: " + name);
+			System.out.println("Date:" + date);
 
 			post.setName(utf8EncodedString(name));
 			post.setDate(date);
@@ -188,7 +214,8 @@ public class ScrapBoost extends PageScrapper {
 			Elements title = doc.select("title");
 			for (Element t : title) {
 				String text = t.text();
-				// System.out.println("Assunto: " + texto);
+				text = text.replace("Boost mailing page: ", "");	// remove título supérfluo
+				System.out.println("Assunto: " + text);
 				post.setTitle(utf8EncodedString(text));
 			}
 		} catch (Exception e) {
@@ -220,7 +247,7 @@ public class ScrapBoost extends PageScrapper {
 				}
 			}
 			post.setBody(utf8EncodedString(body));
-			System.out.println(post.getBody());
+			//System.out.println(post.getBody());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

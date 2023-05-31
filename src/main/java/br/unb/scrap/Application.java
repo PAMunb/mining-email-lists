@@ -53,7 +53,7 @@ public class Application implements CommandLineRunner {
 			List<Post> posts = scrapper.execute();
 			for (Post post : posts) {
 				repo.save(post);
-				// repo.findAll();
+				//repo.findAll();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
