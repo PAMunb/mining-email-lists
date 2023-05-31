@@ -34,6 +34,15 @@ public abstract class PageScrapper extends ConnectionJsoup {
 	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
 	protected abstract List<String> getLinksByThread();
+	
+	
+	/**
+	 * método é responsável por obter os links dos posts por data a partir de um documento
+	 * HTML, a partir da BASE_URL ou da url passada.
+	 * 
+	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
+	 */
+	protected abstract List<String> getLinksByDate();
 
 	/**
 	 * Método é responsável por extrair as tags li de um documento HTML.
