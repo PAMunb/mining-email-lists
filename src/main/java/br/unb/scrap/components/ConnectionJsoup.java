@@ -2,6 +2,7 @@ package br.unb.scrap.components;
 
 import java.io.IOException;
 
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -11,30 +12,19 @@ import org.jsoup.nodes.Document;
  * scrapping da página.
  *
  */
-//@Configuration
 public class ConnectionJsoup {
 
 	/**
-	 * Variável do tipo String que serve pra indicar a url que será acessada para o
-	 * scrap.
-	 */
-	public static final String BASE_URL = "https://lists.boost.org/Archives/boost/";
-
-	/**
 	 * Método que utiliza a biblioteca Jsoup para fazer uma conexão com uma página
-	 * HTML
-	 * 
-	 * @param url passando a url como parâmetro
-	 * @return retorna o HTML da página em formato de documento
+	 * HTML.
+	 *
+	 * @param url a URL da página para conectar
+	 * @return o HTML da página em formato de documento
+	 * @throws IOException se ocorrer algum erro de I/O durante a conexão
 	 */
-	protected Document connect(String url) {
-		Document doc = null;
-		try {
-			doc = Jsoup.connect(url).get();
-		} catch (IOException e) {
-			throw new RuntimeException(e.getMessage(), e);
-		}
-		return doc;
+	protected Document connect(String url) throws IOException {
+		Connection connection = Jsoup.connect(url);
+		return connection.get();
 	}
 
 }

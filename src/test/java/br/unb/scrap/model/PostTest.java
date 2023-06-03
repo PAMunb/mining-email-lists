@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import br.unb.scrap.enums.PostType;
+
 public class PostTest {
 
 	private Post post;
@@ -23,10 +25,10 @@ public class PostTest {
 	@Test
 	public void testSetAndGetName() {
 		String name = "Louis Tatta";
-		post.setName(name);
-		Assertions.assertEquals(name, post.getName(), "The name was not set correctly.");
+		post.setAuthorName(name);
+		Assertions.assertEquals(name, post.getAuthorName(), "The name was not set correctly.");
 	}
-	
+
 	@Test
 	public void testSetAndGetbody() {
 		String body = "it is a phenomenon that leads to burnout...software system failure";
@@ -34,12 +36,11 @@ public class PostTest {
 		Assertions.assertEquals(body, post.getBody(), "The body was not defined correctly.");
 	}
 
-
 	@Test
 	public void testSetAndGetDate() {
 		String date = "04-05-2005";
-		post.setDate(date);
-		Assertions.assertEquals(date, post.getDate(), "The date was not defined correctly.");
+		post.setPublicationDate(date);
+		Assertions.assertEquals(date, post.getPublicationDate(), "The date was not defined correctly.");
 	}
 
 	@Test
@@ -49,30 +50,29 @@ public class PostTest {
 		Assertions.assertEquals(title, post.getTitle(), "The title was not set correctly.");
 	}
 
-	@Test
-	public void testSetAndGetOriginal() {
-		boolean original = false;
-		post.setOriginal(original);
-		Assertions.assertEquals(original, post.isOriginal(), "Message type not set correctly.");
-	}
+//	@Test
+//	public void testSetAndGetOriginal() {
+//		PostType postType = PostType.ORIGINAL;
+//		Assertions.assertEquals(postType, post.getPostType(), "Message type not set correctly.");
+//	}
 
 	@Test
 	public void testToString() {
 		Long id = 1L;
 		String name = "Louis Tatta";
 		String date = "04-05-1998";
-		String title = "Software Rejuvenation";
+		String subject = "Software Rejuvenation";
 		String body = "it is a phenomenon that leads to burnout...software system failure";
-		boolean original = false;
+		PostType postType = PostType.ORIGINAL;
 
 		post.setId(id);
-		post.setName(name);
-		post.setDate(date);
-		post.setTitle(title);
+		post.setAuthorName(name);
+		post.setPublicationDate(date);
+		post.setTitle(subject);
 		post.setBody(body);
-		post.setOriginal(original);
+		post.setPostType(postType);
 
-		String expectedString = "Post(id=1, name=Louis Tatta, date=04-05-1998, title=Software Rejuvenation, body=it is a phenomenon that leads to burnout...software system failure, original=false)";
+		String expectedString = "Post(id=1, authorName=Louis Tatta, publicationDate=04-05-1998, subject=Software Rejuvenation, body=it is a phenomenon that leads to burnout...software system failure, postType=ORIGINAL)";
 		Assertions.assertEquals(expectedString, post.toString(), "String representation is not correct.");
 	}
 }

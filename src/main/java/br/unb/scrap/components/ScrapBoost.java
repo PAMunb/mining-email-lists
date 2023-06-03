@@ -1,70 +1,85 @@
 package br.unb.scrap.components;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import br.unb.scrap.enums.PostType;
 import br.unb.scrap.model.Post;
 
-/**
- * Classe com métodos para scrap da página Boost (URL passada)
- *
- */
 @Component
-public class ScrapBoost extends PageScrapper {
+public class ScrapBoost implements PageScraper {
+
+	private static final Logger logger = LogManager.getLogger(ScrapBoost.class);
+	public static final String BASE_URL = "https://lists.boost.org/Archives/boost/";
+	private static final String DATE_TAG_SELECTOR = "tbody > tr > td:nth-child(3)";
+	private static final String THREAD_TAG_SELECTOR = "tbody > tr > td:nth-child(4)";
+	private static final String DATE_URL_SUFFIX = "date.php";
+
 	/**
 	 * O método scrap(String url) é responsável por extrair informações relevantes
 	 * de um determinado URL e criar um objeto Post.
 	 */
-	@Override
-	protected Post scrap(String url) {
-		Post post = new Post();
-		try {
-			Document doc = connect(url);
+    @Override
+    public Post scrap(String url) {
+        Post post = new Post();
+        try {
+            Document doc = Jsoup.connect(url).get();
 
-			retrieveAuthorAndDate(doc, post);
-			retrieveTitle(doc, post);
-			retrieveBody(doc, post);
-
-			retrieveIsOriginal(doc, post);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return post;
-	}
+            retrieveAuthorAndDate(doc, post);
+            retrieveTitle(doc, post);
+            retrieveBody(doc, post);
+            retrievePostType(doc, post);
+            
+        } catch (Exception e) {
+            logger.error("Error while scraping post: " + url, e);
+        }
+        return post;
+    }
 
 	/**
-	 * método é responsável por obter os links dos posts por data a partir de um documento
-	 * HTML, a partir da BASE_URL ou da url passada.
+	 * método é responsável por obter os links dos posts por data a partir de um
+	 * documento HTML, a partir da BASE_URL ou da url passada.
 	 * 
 	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
-	protected List<String> getLinksByDate() {
-		List<String> urls = new LinkedList<>();
+    public List<String> getLinksByDate() throws IOException {
+		List<String> dateUrls = new LinkedList<>();
 		try {
-			Document doc = connect(BASE_URL);
+			Document doc = Jsoup.connect(BASE_URL).get();
 			Elements tables = doc.select("table");
 			for (Element table : tables) {
-				Elements tdTags = table.select("tbody > tr > td:nth-child(3)");
-				for (Element tag : tdTags) {
-					if (tag.select("a").text().toString().endsWith("Date")) {
-						urls.add(BASE_URL + tag.select("a").attr("href"));
+				Elements dateColumns = table.select(DATE_TAG_SELECTOR);
+				for (Element column : dateColumns) {
+					Elements links = column.select("a");
+					if (links.size() > 0) {
+						Element link = links.first();
+						if (link.text().endsWith("Date")) {
+							String url = BASE_URL + link.attr("href");
+							dateUrls.add(url);
+						}
 					}
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while getting links by date", e);
 		}
-		//System.out.println(urls);
-		return urls;
+		return dateUrls;
 	}
 
 	/**
@@ -73,24 +88,28 @@ public class ScrapBoost extends PageScrapper {
 	 * 
 	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
-	protected List<String> getLinksByThread() {
-		List<String> urls = new LinkedList<>();
+    public List<String> getLinksByThread() throws IOException {
+		List<String> threadUrls = new LinkedList<>();
 		try {
-			Document doc = connect(BASE_URL);
+			Document doc = Jsoup.connect(BASE_URL).get();
 			Elements tables = doc.select("table");
 			for (Element table : tables) {
-				Elements tdTags = table.select("tbody > tr > td:nth-child(4)");
-				for (Element tag : tdTags) {
-					if (tag.select("a").text().toString().endsWith("Thread")) {
-						urls.add(BASE_URL + tag.select("a").attr("href"));
+				Elements threadColumns = table.select(THREAD_TAG_SELECTOR);
+				for (Element column : threadColumns) {
+					Elements links = column.select("a");
+					if (links.size() > 0) {
+						Element link = links.first();
+						if (link.text().endsWith("Thread")) {
+							String url = BASE_URL + link.attr("href");
+							threadUrls.add(url);
+						}
 					}
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while getting links by thread", e);
 		}
-		// System.out.println(urls);
-		return urls;
+		return threadUrls;
 	}
 
 	/**
@@ -99,20 +118,18 @@ public class ScrapBoost extends PageScrapper {
 	 * @param doc passando o document como parâmentro
 	 * @return Retorna a coleção liTags contendo todas as tags li extraídas.
 	 */
-	protected Elements extractLiTags(Document doc) {
+    public Elements extractLiTags(Document doc) {
 		Elements liTags = new Elements();
 		try {
 			Element ulParent = doc.select("ul").first();
 			Elements lis = ulParent.select("li");
 			for (Element li : lis) {
 				liTags.add(li);
-				/* Element ul = li.select("ul").first();
-				if (ul != null) {
-					Document newDoc = Jsoup.parse(ul.toString());
-					// Chama recursivamente o método
-					liTags.addAll(extractLiTags(newDoc));
-				}
-//	            break; */
+				/*
+				 * Element ul = li.select("ul").first(); if (ul != null) { Document newDoc =
+				 * Jsoup.parse(ul.toString()); // Chama recursivamente o método
+				 * liTags.addAll(extractLiTags(newDoc)); } // break;
+				 */
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -127,23 +144,24 @@ public class ScrapBoost extends PageScrapper {
 	 * @return Retorna um conjunto msgs contendo os links das mensagens extraídas.
 	 */
 
-	public Set<String> getLinksMessages() {
+	public Set<String> getLinksMessages() throws IOException {
 		Set<String> msgs = new HashSet<String>();
-		//List<String> urls = getLinksByThread();
 		List<String> urls = getLinksByDate();
+		// List<String> urls = getLinksByThread();
 		for (String url : urls) {
 			try {
-				Document doc = connect(url);
+				Connection connection = Jsoup.connect(url);
+				Document doc = connection.get();
 				for (Element li : extractLiTags(doc)) {
 					String link = li.select("a").attr("href");
-					msgs.add(url.replace("date.php", link));
+					msgs.add(url.replace(DATE_URL_SUFFIX, link));
 				}
-	            break;
+				break;
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error("Error while getting links messages for URL: " + url, e);
 			}
 		}
-		System.out.println(msgs.size());
+//		logger.info(msgs.size());
 		return msgs;
 	}
 
@@ -153,51 +171,62 @@ public class ScrapBoost extends PageScrapper {
 	 * 
 	 * @return Retorna uma lista de objetos do tipoo Post
 	 */
-	public List<Post> execute() {
+	public List<Post> execute() throws IOException {
 		List<Post> posts = new LinkedList<>();
-		Set<String> urls = getLinksMessages();
+		Set<String> urls;
+		try {
+			urls = getLinksMessages();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return posts;
+		}
 		for (String url : urls) {
 			try {
 				Post post = scrap(url);
 				posts.add(post);
-//	            break;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		System.out.println(posts);
+		logger.info(posts);
 		return posts;
 	}
 
 	/**
-	 * Método que extrai o autor e a data do post a partir do documento HTML
-	 * fornecido. Ele seleciona o primeiro elemento de parágrafo dentro do elemento
-	 * body p, remove as tags em desse elemento e divide o texto resultante em duas
-	 * partes para obter o nome do autor e a data do post
+	 * Método que recebe um objeto Document e um objeto Post como parâmetros. O
+	 * objetivo desse método é extrair informações sobre o autor e a data de um
+	 * documento HTML e atribuí-las ao objeto Post.
 	 * 
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
-	protected void retrieveAuthorAndDate(Document doc, Post post) {
+	public void retrieveAuthorAndDate(Document doc, Post post) {
 		try {
-			Element element = doc.select("body p").first();
-			String phrase = element.text();
+			Element headers = doc.select("p.headers").first();
+			String headersContent = headers.text();
 
-			// Retira a tag EM
-			element.select("em").remove();
-			phrase = element.text();
+			String name = "";
+			String date = "";
 
-			// Divide a frase em nome e data
-			String name = phrase.substring(0, phrase.indexOf("(") - 1);
-			String date = phrase.substring(phrase.indexOf("Date:"));
+			Pattern authorPattern = Pattern.compile("From:\\s(.+?)\\s\\(");
+			Matcher authorMatcher = authorPattern.matcher(headersContent);
+			if (authorMatcher.find()) {
+				name = authorMatcher.group(1).trim();
+			}
 
-			System.out.println("Autor: " + name);
-			System.out.println("Date:" + date);
+			Pattern datePattern = Pattern.compile("Date:\\s(\\d{4}-\\d{2}-\\d{2}\\s\\d{2}:\\d{2}:\\d{2})");
+			Matcher dateMatcher = datePattern.matcher(headersContent);
+			if (dateMatcher.find()) {
+				date = dateMatcher.group(1).trim();
+			}
 
-			post.setName(utf8EncodedString(name));
-			post.setDate(date);
+			logger.info("Autor: " + name);
+			logger.info("Data: " + date);
+
+			post.setAuthorName(utf8EncodedString(name));
+			post.setPublicationDate(date);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while retrieving author and date", e);
 		}
 	}
 
@@ -209,18 +238,19 @@ public class ScrapBoost extends PageScrapper {
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
-	protected void retrieveTitle(Document doc, Post post) {
+	public void retrieveTitle(Document doc, Post post) {
 		try {
 			Elements title = doc.select("title");
 			for (Element t : title) {
 				String text = t.text();
-				text = text.replace("Boost mailing page: ", "");	// remove título supérfluo
-				System.out.println("Assunto: " + text);
+				text = text.replace("Boost mailing page: ", ""); // remove título supérfluo
+				logger.info("title: " + text);
 				post.setTitle(utf8EncodedString(text));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while retrieving subject", e);
 		}
+
 	}
 
 	/**
@@ -232,24 +262,23 @@ public class ScrapBoost extends PageScrapper {
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
-	protected void retrieveBody(Document doc, Post post) {
+	public void retrieveBody(Document doc, Post post) {
 		try {
-			String tagBody = getStringBetweenTwoCharacters(doc.toString(), "<!-- body=\"start\" -->",
-					"<!-- body=\"end\" -->");
+
+			String start = "<!-- body=\"start\" -->";
+			String end = "<!-- body=\"end\" -->";
+			String tagBody = getStringBetweenTwoCharacters(doc.toString(), start, end);
 			doc = Jsoup.parse(tagBody);
-			String body = "";
+
 			Elements paragraphs = doc.select("p");
-			for (Element paragraph : paragraphs) {
-				String text = paragraph.text().trim();
-				if (!text.isEmpty()) {
-					// System.out.println("corpo do e-mail");
-					body += text + "\n";
-				}
-			}
+			List<String> paragraphTexts = paragraphs.stream().map(Element::text).map(String::trim)
+					.filter(text -> !text.isEmpty()).collect(Collectors.toList());
+
+			String body = String.join("\n", paragraphTexts);
 			post.setBody(utf8EncodedString(body));
-			//System.out.println(post.getBody());
+			// System.out.println(post.getBody());
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while retrieving body", e);
 		}
 	}
 
@@ -279,7 +308,7 @@ public class ScrapBoost extends PageScrapper {
 	 * UTF-8 e, em seguida, cria uma nova string a partir desses bytes, também
 	 * usando a codificação UTF-8.
 	 * 
-	 * @param str  passando A string como parâmentro
+	 * @param str passando A string como parâmentro
 	 * @return Retona a String codificada em UTF-8.
 	 */
 	protected String utf8EncodedString(String str) {
@@ -288,7 +317,7 @@ public class ScrapBoost extends PageScrapper {
 			return new String(bytes, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null; 
+			return null;
 		}
 	}
 
@@ -302,23 +331,25 @@ public class ScrapBoost extends PageScrapper {
 	 * @param doc  passando o doc como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
-	protected boolean retrieveIsOriginal(Document doc, Post post) {
+	public boolean retrievePostType(Document doc, Post post) {
+		System.out.println("*----------------------------------------------------------*");
 		try {
 			String searchTerm = "Reply";
 			String html = doc.html();
 			if (html.contains(searchTerm)) {
-				System.out.println("This is the original email" + " >>>>>>" + true);
-				post.setOriginal(true);
+				logger.info("This is the original email" + " >>>>>>" + true);
+				post.setPostType(PostType.ORIGINAL);
 				return true;
 			} else {
-				System.out.println("This is the reply email" + " >>>>>>" + false);
-				post.setOriginal(false);
+				logger.info("This is the reply email" + " >>>>>>" + false);
+				post.setPostType(PostType.REPLY);
 				return false;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Error while retrieving post Type", e);
 			return false;
 		}
 	}
+
 
 }

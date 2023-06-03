@@ -2,12 +2,14 @@ package br.unb.scrap;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import br.unb.scrap.components.PageScrapper;
+import br.unb.scrap.components.PageScraper;
 import br.unb.scrap.model.Post;
 import br.unb.scrap.repository.PostRepository;
 
@@ -18,11 +20,13 @@ import br.unb.scrap.repository.PostRepository;
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
+	private static final Logger logger = LoggerFactory.getLogger(Application.class);
+
 	@Autowired
 	private PostRepository repo;
 
 	@Autowired
-	private PageScrapper scrapper;
+	private PageScraper scraper;
 
 	/**
 	 * Esta classe é o ponto de entrada para a execução da aplicação
@@ -41,6 +45,9 @@ public class Application implements CommandLineRunner {
 
 		fillDataBase();
 
+		long postCount = repo.count();
+		logger.info("Quantidade de Posts: " + " >>>>>>>>>>>>>>> " + postCount);
+
 		System.err.println("++++++++++++++++++++++");
 	}
 
@@ -50,10 +57,10 @@ public class Application implements CommandLineRunner {
 	 */
 	public void fillDataBase() {
 		try {
-			List<Post> posts = scrapper.execute();
+			List<Post> posts = scraper.execute();
 			for (Post post : posts) {
 				repo.save(post);
-				//repo.findAll();
+				// repo.findAll();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
