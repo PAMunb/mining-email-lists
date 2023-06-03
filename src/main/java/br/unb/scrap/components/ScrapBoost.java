@@ -30,27 +30,34 @@ public class ScrapBoost implements PageScraper {
 	private static final String DATE_TAG_SELECTOR = "tbody > tr > td:nth-child(3)";
 	private static final String THREAD_TAG_SELECTOR = "tbody > tr > td:nth-child(4)";
 	private static final String DATE_URL_SUFFIX = "date.php";
+	private final FileLogger fileLogger;
+
+	public ScrapBoost() {
+		fileLogger = new FileLogger();
+	}
+
 
 	/**
 	 * O método scrap(String url) é responsável por extrair informações relevantes
 	 * de um determinado URL e criar um objeto Post.
 	 */
-    @Override
-    public Post scrap(String url) {
-        Post post = new Post();
-        try {
-            Document doc = Jsoup.connect(url).get();
+	@Override
+	public Post scrap(String url) {
+		Post post = new Post();
+		try {
+			Document doc = Jsoup.connect(url).get();
 
-            retrieveAuthorAndDate(doc, post);
-            retrieveTitle(doc, post);
-            retrieveBody(doc, post);
-            retrievePostType(doc, post);
-            
-        } catch (Exception e) {
-            logger.error("Error while scraping post: " + url, e);
-        }
-        return post;
-    }
+			retrieveAuthorAndDate(doc, post);
+			retrieveTitle(doc, post);
+			retrieveBody(doc, post);
+			retrievePostType(doc, post);
+
+		} catch (Exception e) {
+			logger.error("Error while retrieving date links", e);
+			fileLogger.logException("Error while retrieving date links", e);
+		}
+		return post;
+	}
 
 	/**
 	 * método é responsável por obter os links dos posts por data a partir de um
@@ -58,7 +65,7 @@ public class ScrapBoost implements PageScraper {
 	 * 
 	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
-    public List<String> getLinksByDate() throws IOException {
+	public List<String> getLinksByDate() throws IOException {
 		List<String> dateUrls = new LinkedList<>();
 		try {
 			Document doc = Jsoup.connect(BASE_URL).get();
@@ -78,6 +85,7 @@ public class ScrapBoost implements PageScraper {
 			}
 		} catch (Exception e) {
 			logger.error("Error while getting links by date", e);
+			fileLogger.logException("Error while getting links by date", e);
 		}
 		return dateUrls;
 	}
@@ -88,7 +96,7 @@ public class ScrapBoost implements PageScraper {
 	 * 
 	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
-    public List<String> getLinksByThread() throws IOException {
+	public List<String> getLinksByThread() throws IOException {
 		List<String> threadUrls = new LinkedList<>();
 		try {
 			Document doc = Jsoup.connect(BASE_URL).get();
@@ -108,6 +116,7 @@ public class ScrapBoost implements PageScraper {
 			}
 		} catch (Exception e) {
 			logger.error("Error while getting links by thread", e);
+			fileLogger.logException("Error while getting links by thread", e);
 		}
 		return threadUrls;
 	}
@@ -118,7 +127,7 @@ public class ScrapBoost implements PageScraper {
 	 * @param doc passando o document como parâmentro
 	 * @return Retorna a coleção liTags contendo todas as tags li extraídas.
 	 */
-    public Elements extractLiTags(Document doc) {
+	public Elements extractLiTags(Document doc) {
 		Elements liTags = new Elements();
 		try {
 			Element ulParent = doc.select("ul").first();
@@ -159,6 +168,7 @@ public class ScrapBoost implements PageScraper {
 				break;
 			} catch (Exception e) {
 				logger.error("Error while getting links messages for URL: " + url, e);
+				fileLogger.logException("Error while getting links messages for URL:", e);
 			}
 		}
 //		logger.info(msgs.size());
@@ -169,7 +179,7 @@ public class ScrapBoost implements PageScraper {
 	 * Método que percorre uma lista de URLs, faz a raspagem de dados dessas URLs
 	 * para criar objetos Post e armazena esses objetos em uma lista.
 	 * 
-	 * @return Retorna uma lista de objetos do tipoo Post
+	 * @return Retorna uma lista de objetos do tipo Post
 	 */
 	public List<Post> execute() throws IOException {
 		List<Post> posts = new LinkedList<>();
@@ -197,7 +207,7 @@ public class ScrapBoost implements PageScraper {
 	 * objetivo desse método é extrair informações sobre o autor e a data de um
 	 * documento HTML e atribuí-las ao objeto Post.
 	 * 
-	 * @param doc  passando o doc como parâmentro
+	 * @param doc  passando o documento como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
 	public void retrieveAuthorAndDate(Document doc, Post post) {
@@ -227,6 +237,7 @@ public class ScrapBoost implements PageScraper {
 			post.setPublicationDate(date);
 		} catch (Exception e) {
 			logger.error("Error while retrieving author and date", e);
+			fileLogger.logException("Error while retrieving author and date", e);
 		}
 	}
 
@@ -235,7 +246,7 @@ public class ScrapBoost implements PageScraper {
 	 * fornecido. Ele seleciona o elemento de título no documento, obtém o texto
 	 * desse elemento e define esse texto como o título do post no objeto Post
 	 * 
-	 * @param doc  passando o doc como parâmentro
+	 * @param doc  passando o documento como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
 	public void retrieveTitle(Document doc, Post post) {
@@ -249,6 +260,7 @@ public class ScrapBoost implements PageScraper {
 			}
 		} catch (Exception e) {
 			logger.error("Error while retrieving subject", e);
+			fileLogger.logException("Error while retrieving subject", e);
 		}
 
 	}
@@ -259,7 +271,7 @@ public class ScrapBoost implements PageScraper {
 	 * obtém o texto de cada parágrafo e define esse texto como o corpo do post no
 	 * objeto Post
 	 * 
-	 * @param doc  passando o doc como parâmentro
+	 * @param doc  passando o documento como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
 	public void retrieveBody(Document doc, Post post) {
@@ -279,6 +291,7 @@ public class ScrapBoost implements PageScraper {
 			// System.out.println(post.getBody());
 		} catch (Exception e) {
 			logger.error("Error while retrieving body", e);
+			fileLogger.logException("Error while retrieving body", e);
 		}
 	}
 
@@ -298,7 +311,8 @@ public class ScrapBoost implements PageScraper {
 			return input.substring(input.indexOf(from) + 1, input.lastIndexOf(to));
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null; // Or any other appropriate action for error handling
+			fileLogger.logException("", e);
+			return null; 
 		}
 	}
 
@@ -317,6 +331,7 @@ public class ScrapBoost implements PageScraper {
 			return new String(bytes, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			e.printStackTrace();
+			fileLogger.logException("", e);
 			return null;
 		}
 	}
@@ -328,7 +343,7 @@ public class ScrapBoost implements PageScraper {
 	 * original (true) e se não for encontrada, define que é um email de resposta
 	 * (false).
 	 * 
-	 * @param doc  passando o doc como parâmentro
+	 * @param doc  passando o documento como parâmentro
 	 * @param post passando o post como parâmetro
 	 */
 	public boolean retrievePostType(Document doc, Post post) {
@@ -347,9 +362,9 @@ public class ScrapBoost implements PageScraper {
 			}
 		} catch (Exception e) {
 			logger.error("Error while retrieving post Type", e);
+			fileLogger.logException("Error while retrieving post Type", e);
 			return false;
 		}
 	}
-
 
 }

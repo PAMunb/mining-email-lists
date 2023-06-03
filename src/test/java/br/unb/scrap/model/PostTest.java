@@ -30,7 +30,7 @@ public class PostTest {
 	}
 
 	@Test
-	public void testSetAndGetbody() {
+	public void testSetAndGetBody() {
 		String body = "it is a phenomenon that leads to burnout...software system failure";
 		post.setBody(body);
 		Assertions.assertEquals(body, post.getBody(), "The body was not defined correctly.");
@@ -50,11 +50,12 @@ public class PostTest {
 		Assertions.assertEquals(title, post.getTitle(), "The title was not set correctly.");
 	}
 
-//	@Test
-//	public void testSetAndGetOriginal() {
-//		PostType postType = PostType.ORIGINAL;
-//		Assertions.assertEquals(postType, post.getPostType(), "Message type not set correctly.");
-//	}
+	@Test
+	public void testSetAndGetPostType() {
+		PostType postType = PostType.ORIGINAL;
+		post.setPostType(postType);
+		Assertions.assertEquals(postType, post.getPostType(), "Message type not set correctly.");
+	}
 
 	@Test
 	public void testToString() {
@@ -72,7 +73,7 @@ public class PostTest {
 		post.setBody(body);
 		post.setPostType(postType);
 
-		String expectedString = "Post(id=1, authorName=Louis Tatta, publicationDate=04-05-1998, subject=Software Rejuvenation, body=it is a phenomenon that leads to burnout...software system failure, postType=ORIGINAL)";
+		String expectedString = "Post(id=1, authorName=Louis Tatta, publicationDate=04-05-1998, title=Software Rejuvenation, body=it is a phenomenon that leads to burnout...software system failure, postType=ORIGINAL)";
 		Assertions.assertEquals(expectedString, post.toString(), "String representation is not correct.");
 	}
 }
