@@ -36,7 +36,6 @@ public class ScrapBoost implements PageScraper {
 		fileLogger = new FileLogger();
 	}
 
-
 	/**
 	 * O método scrap(String url) é responsável por extrair informações relevantes
 	 * de um determinado URL e criar um objeto Post.
@@ -53,8 +52,8 @@ public class ScrapBoost implements PageScraper {
 			retrievePostType(doc, post);
 
 		} catch (Exception e) {
-			logger.error("Error while retrieving date links", e);
-			fileLogger.logException("Error while retrieving date links", e);
+			logger.error("scrap", e);
+			fileLogger.logException("Error while scrapping", "url", e);
 		}
 		return post;
 	}
@@ -85,7 +84,7 @@ public class ScrapBoost implements PageScraper {
 			}
 		} catch (Exception e) {
 			logger.error("Error while getting links by date", e);
-			fileLogger.logException("Error while getting links by date", e);
+			fileLogger.logException("Error while getting links by date", "url", e);
 		}
 		return dateUrls;
 	}
@@ -116,7 +115,7 @@ public class ScrapBoost implements PageScraper {
 			}
 		} catch (Exception e) {
 			logger.error("Error while getting links by thread", e);
-			fileLogger.logException("Error while getting links by thread", e);
+			fileLogger.logException("Error while getting links by thread", "url", e);
 		}
 		return threadUrls;
 	}
@@ -165,10 +164,10 @@ public class ScrapBoost implements PageScraper {
 					String link = li.select("a").attr("href");
 					msgs.add(url.replace(DATE_URL_SUFFIX, link));
 				}
-				break;
+//				break;
 			} catch (Exception e) {
 				logger.error("Error while getting links messages for URL: " + url, e);
-				fileLogger.logException("Error while getting links messages for URL:", e);
+				fileLogger.logException("Error while getting links messages for URL:", "url", e);
 			}
 		}
 //		logger.info(msgs.size());
@@ -237,7 +236,7 @@ public class ScrapBoost implements PageScraper {
 			post.setPublicationDate(date);
 		} catch (Exception e) {
 			logger.error("Error while retrieving author and date", e);
-			fileLogger.logException("Error while retrieving author and date", e);
+			fileLogger.logException("Error while retrieving author and date", "url", e);
 		}
 	}
 
@@ -260,7 +259,7 @@ public class ScrapBoost implements PageScraper {
 			}
 		} catch (Exception e) {
 			logger.error("Error while retrieving subject", e);
-			fileLogger.logException("Error while retrieving subject", e);
+			fileLogger.logException("Error while retrieving subject", "url", e);
 		}
 
 	}
@@ -291,7 +290,7 @@ public class ScrapBoost implements PageScraper {
 			// System.out.println(post.getBody());
 		} catch (Exception e) {
 			logger.error("Error while retrieving body", e);
-			fileLogger.logException("Error while retrieving body", e);
+			fileLogger.logException("Error while retrieving body", "url", e);
 		}
 	}
 
@@ -311,8 +310,8 @@ public class ScrapBoost implements PageScraper {
 			return input.substring(input.indexOf(from) + 1, input.lastIndexOf(to));
 		} catch (Exception e) {
 			e.printStackTrace();
-			fileLogger.logException("", e);
-			return null; 
+			fileLogger.logException("getStringBetweenTwoCharacters Exception", "url", e);
+			return null;
 		}
 	}
 
@@ -331,7 +330,7 @@ public class ScrapBoost implements PageScraper {
 			return new String(bytes, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			e.printStackTrace();
-			fileLogger.logException("", e);
+			fileLogger.logException("utf8EncodedString Exception", "url", e);
 			return null;
 		}
 	}
@@ -362,7 +361,7 @@ public class ScrapBoost implements PageScraper {
 			}
 		} catch (Exception e) {
 			logger.error("Error while retrieving post Type", e);
-			fileLogger.logException("Error while retrieving post Type", e);
+			fileLogger.logException("Error while retrieving post Type", "url", e);
 			return false;
 		}
 	}
