@@ -15,7 +15,7 @@ import br.unb.scrap.repository.PostRepository;
 
 /**
  * Classe main, inicializa a aplicacação com spring boot
- *
+ * testando
  */
 @SpringBootApplication
 public class Application implements CommandLineRunner {
