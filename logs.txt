@@ -1,4 +1,0 @@
-Método: Error while scrapping
-URL: url
-Exceção: HTTP error fetching URL. Status=404, URL=[https://lists.boost.org/Archives/boost/2001/01/7821.php]
-

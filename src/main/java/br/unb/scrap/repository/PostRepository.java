@@ -1,5 +1,7 @@
 package br.unb.scrap.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.unb.scrap.model.Post;
@@ -11,5 +13,7 @@ import br.unb.scrap.model.Post;
  *
  */
 public interface PostRepository extends JpaRepository<Post, Long> {
+
+	List<Post> findByAuthorNameAndBody(String authorName, String body);
 
 }

@@ -1,5 +1,8 @@
 package br.unb.scrap;
 
+import static br.unb.scrap.utils.UrlUtils.BASE_URL_BOOST;
+
+import java.io.IOException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -13,10 +16,6 @@ import br.unb.scrap.components.PageScraper;
 import br.unb.scrap.model.Post;
 import br.unb.scrap.repository.PostRepository;
 
-/**
- * Classe main, inicializa a aplicacação com spring boot
- * testando
- */
 @SpringBootApplication
 public class Application implements CommandLineRunner {
 
@@ -28,43 +27,34 @@ public class Application implements CommandLineRunner {
 	@Autowired
 	private PageScraper scraper;
 
-	/**
-	 * Esta classe é o ponto de entrada para a execução da aplicação
-	 * 
-	 * @param args O parâmentro args
-	 */
 	public static void main(String[] args) {
-		System.err.println(">>>>>> ");
+		logger.info(">>>>>> Starting Application");
 		SpringApplication.run(Application.class, args);
-		System.err.println("====== ");
+		logger.info("====== Application Started");
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.err.println("..................... ");
+		logger.info("..................... Running Application");
 
-		fillDataBase();
+		fillDataBase(BASE_URL_BOOST);
+		// fillDataBase("url_page2");
 
 		long postCount = repo.count();
 		logger.info("Quantidade de Posts: " + " >>>>>>>>>>>>>>> " + postCount);
 
-		System.err.println("++++++++++++++++++++++");
+		logger.info("++++++++++++++++++++++");
 	}
 
-	/**
-	 * Método que serve para popular o banco de dados. Salva os posts recuperados
-	 * pelo método chamado execute presente na classe @PageScrapper
-	 */
-	public void fillDataBase() {
+	public void fillDataBase(String url) throws IOException {
 		try {
-			List<Post> posts = scraper.execute();
+			List<Post> posts = scraper.execute(url);
 			for (Post post : posts) {
 				repo.save(post);
-				// repo.findAll();
 			}
+			logger.info("Data filled successfully from " + url);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("Unexpected error while filling the database with data from " + url, e);
 		}
 	}
-
 }

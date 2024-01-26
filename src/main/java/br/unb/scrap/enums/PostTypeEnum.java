@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
-public enum PostType {
+public enum PostTypeEnum {
 
 	ORIGINAL(true), REPLY(false);
 

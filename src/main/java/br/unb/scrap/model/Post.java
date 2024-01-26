@@ -2,26 +2,28 @@ package br.unb.scrap.model;
 
 import java.io.Serializable;
 
-import br.unb.scrap.enums.PostType;
+import br.unb.scrap.enums.PostTypeEnum;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
- * Classe model que representa um post,com seus respectivos atributos.
- * Getters/setters/hashcode and equals sendo gerados automaticamente e
- * implícitamente pelo lombok. Anotação @Entity indicando que é uma entidade do
- * banco de dados.
+ * Classe model com seus respectivos atributos. Getters/setters/hashcode and
+ * equals sendo gerados automaticamente e implícitamente pelo lombok.
+ * Anotação @Entity indicando que é uma entidade do banco de dados.
  *
  */
+@Getter
+@Setter
+@ToString
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -50,19 +52,24 @@ public class Post implements Serializable {
 	/**
 	 * Título do Post.
 	 */
-	@Size(max = 300)
+	@Column(length = 255)
 	private String title;
 
 	/**
 	 * Texto presente no corpo do Post.
 	 */
-	@Column(columnDefinition = "LONGTEXT")
+	@Column(columnDefinition = "TEXT")
 	private String body;
 
 	/**
 	 * Indica se a mensagem é original ou um reply.
 	 */
-	@Enumerated(EnumType.STRING)
-	private PostType postType;
+	private boolean original;
 
+	private PostTypeEnum postTypeEnum;
+
+	public void setPostType(PostTypeEnum postTypeEnum) {
+		this.postTypeEnum = postTypeEnum;
+
+	}
 }

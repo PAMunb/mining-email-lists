@@ -31,7 +31,7 @@ public class FileLogger {
 	 * uma linha em branco. Se ocorrer uma IOException durante o processo de
 	 * escrita, ela é impressa na saída de erro padrão.
 	 * 
-	 *@param metodo       O método associado à exceção
+	 * @param metodo    O método associado à exceção
 	 * @param url       a URL associada à exceção
 	 * @param exception a exceção a ser registrada
 	 */
