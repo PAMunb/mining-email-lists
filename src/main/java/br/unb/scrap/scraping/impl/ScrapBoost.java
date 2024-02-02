@@ -1,4 +1,4 @@
-package br.unb.scrap.pageScraper.impl;
+package br.unb.scrap.scraping.impl;
 
 import static br.unb.scrap.utils.UrlUtils.BOOST_ARCHIVES_BASE_URL;
 
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import br.unb.scrap.domain.Post;
 import br.unb.scrap.enums.PostTypeEnum;
 import br.unb.scrap.logging.FileLogger;
-import br.unb.scrap.pageScraper.PageScraper;
+import br.unb.scrap.scraping.PageScraper;
 
 @Component
 //@Primary

@@ -1,4 +1,4 @@
-package br.unb.scrap.pageScraper;
+package br.unb.scrap.scraping;
 
 import java.io.IOException;
 import java.util.List;

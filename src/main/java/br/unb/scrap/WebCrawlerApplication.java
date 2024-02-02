@@ -16,8 +16,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import br.unb.scrap.domain.Post;
-import br.unb.scrap.pageScraper.PageScraper;
 import br.unb.scrap.repository.PostRepository;
+import br.unb.scrap.scraping.PageScraper;
 
 @SpringBootApplication
 public class WebCrawlerApplication implements CommandLineRunner {
