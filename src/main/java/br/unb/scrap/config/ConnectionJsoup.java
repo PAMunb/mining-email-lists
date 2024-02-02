@@ -1,4 +1,4 @@
-package br.unb.scrap.components;
+package br.unb.scrap.config;
 
 import java.io.IOException;
 

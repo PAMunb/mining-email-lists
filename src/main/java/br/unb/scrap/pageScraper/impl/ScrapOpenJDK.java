@@ -1,6 +1,6 @@
-package br.unb.scrap.components;
+package br.unb.scrap.pageScraper.impl;
 
-import static br.unb.scrap.utils.UrlUtils.BASE_URL_OPENJDK;
+import static br.unb.scrap.utils.UrlUtils.OPENJDK_MAILING_LIST_BASE_URL;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,10 +18,13 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import br.unb.scrap.domain.Post;
 import br.unb.scrap.enums.PostTypeEnum;
-import br.unb.scrap.model.Post;
+import br.unb.scrap.logging.FileLogger;
+import br.unb.scrap.pageScraper.PageScraper;
 
 @Component
+//@Primary
 public class ScrapOpenJDK implements PageScraper {
 
 	private static final Logger logger = LogManager.getLogger(ScrapOpenJDK.class);
@@ -59,14 +62,14 @@ public class ScrapOpenJDK implements PageScraper {
 
 	/**
 	 * método é responsável por obter os links dos posts por data a partir de um
-	 * documento HTML, a partir da BASE_URL_OPENJDK ou da url passada.
+	 * documento HTML, a partir da OPENJDK_MAILING_LIST_BASE_URL ou da url passada.
 	 * 
 	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
 	public List<String> getLinksByDate() throws IOException {
 		List<String> dateUrls = new LinkedList<>();
 		try {
-			Document doc = Jsoup.connect(BASE_URL_OPENJDK).get();
+			Document doc = Jsoup.connect(OPENJDK_MAILING_LIST_BASE_URL).get();
 			Elements tables = doc.select("table");
 			for (Element table : tables) {
 				Elements tr_tags = table.select(TR_TAG_SELECTOR);
@@ -78,7 +81,7 @@ public class ScrapOpenJDK implements PageScraper {
 						if (links.size() > 0) {
 							for (Element link : links) {
 								if (link.text().endsWith("[ Date ]")) {
-									String url = BASE_URL_OPENJDK + link.attr("href");
+									String url = OPENJDK_MAILING_LIST_BASE_URL + link.attr("href");
 									logger.info(url); // debug
 									dateUrls.add(url);
 								}
@@ -96,14 +99,14 @@ public class ScrapOpenJDK implements PageScraper {
 
 	/**
 	 * método é responsável por obter os links das threads a partir de um documento
-	 * HTML, a partir da BASE_URL_OPENJDK ou da url passada.
+	 * HTML, a partir da OPENJDK_MAILING_LIST_BASE_URL ou da url passada.
 	 * 
 	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
 	public List<String> getLinksByThread() throws IOException {
 		List<String> threadUrls = new LinkedList<>();
 		try {
-			Document doc = Jsoup.connect(BASE_URL_OPENJDK).get();
+			Document doc = Jsoup.connect(OPENJDK_MAILING_LIST_BASE_URL).get();
 			Elements tables = doc.select("table");
 			for (Element table : tables) {
 				Elements threadColumns = table.select(THREAD_TAG_SELECTOR);
@@ -112,7 +115,7 @@ public class ScrapOpenJDK implements PageScraper {
 					if (links.size() > 0) {
 						Element link = links.first();
 						if (link.text().endsWith("Thread")) {
-							String url = BASE_URL_OPENJDK + link.attr("href");
+							String url = OPENJDK_MAILING_LIST_BASE_URL + link.attr("href");
 							threadUrls.add(url);
 						}
 					}
@@ -221,13 +224,13 @@ public class ScrapOpenJDK implements PageScraper {
 			String authorName = author.text();
 
 			Element date = doc.select("i").first();
-			String dateString = date.text().substring(4); // remove dia da semana
+			String daring = date.text().substring(4); // remove dia da semana
 
 			logger.info("Autor: " + authorName); // debug
-			logger.info("Data: " + dateString); // debug
+			logger.info("Data: " + daring); // debug
 
 			post.setAuthorName(utf8EncodedString(authorName));
-			post.setPublicationDate(dateString);
+			post.setPublicationDate(daring);
 		} catch (Exception e) {
 			logger.error("Error while retrieving author and date", e);
 			fileLogger.logException("Error while retrieving author and date", "url", e);

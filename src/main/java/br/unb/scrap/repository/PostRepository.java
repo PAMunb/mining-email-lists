@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.unb.scrap.model.Post;
+import br.unb.scrap.domain.Post;
 
 /**
  * Classe de repositório do @Post estendendo a JPARepository que por sua vez,

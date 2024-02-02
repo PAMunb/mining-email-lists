@@ -1,6 +1,9 @@
 package br.unb.scrap;
 
-import static br.unb.scrap.utils.UrlUtils.BASE_URL_BOOST;
+//import static br.unb.scrap.utils.UrlUtils.BOOST_ARCHIVES_BASE_URL;
+//import static br.unb.scrap.utils.UrlUtils.OPENJDK_MAILING_LIST_BASE_URL;
+import static br.unb.scrap.utils.UrlUtils.PYTHON_LIST_MAILING_LIST_BASE_URL;
+//import static br.unb.scrap.utils.UrlUtils.JAVA_MAIL_ARCHIVE_BASE_URL;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,14 +15,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import br.unb.scrap.components.PageScraper;
-import br.unb.scrap.model.Post;
+import br.unb.scrap.domain.Post;
+import br.unb.scrap.pageScraper.PageScraper;
 import br.unb.scrap.repository.PostRepository;
 
 @SpringBootApplication
-public class Application implements CommandLineRunner {
+public class WebCrawlerApplication implements CommandLineRunner {
 
-	private static final Logger logger = LoggerFactory.getLogger(Application.class);
+	private static final Logger logger = LoggerFactory.getLogger(WebCrawlerApplication.class);
 
 	@Autowired
 	private PostRepository repo;
@@ -29,7 +32,7 @@ public class Application implements CommandLineRunner {
 
 	public static void main(String[] args) {
 		logger.info(">>>>>> Starting Application");
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(WebCrawlerApplication.class, args);
 		logger.info("====== Application Started");
 	}
 
@@ -37,8 +40,10 @@ public class Application implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		logger.info("..................... Running Application");
 
-		fillDataBase(BASE_URL_BOOST);
-		// fillDataBase("url_page2");
+//		fillDataBase(BOOST_ARCHIVES_BASE_URL);
+//		fillDataBase(OPENJDK_MAILING_LIST_BASE_URL);
+		fillDataBase(PYTHON_LIST_MAILING_LIST_BASE_URL);
+//		fillDataBase(JAVA_MAIL_ARCHIVE_BASE_URL);
 
 		long postCount = repo.count();
 		logger.info("Quantidade de Posts: " + " >>>>>>>>>>>>>>> " + postCount);

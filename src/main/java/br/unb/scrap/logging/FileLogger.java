@@ -1,7 +1,10 @@
-package br.unb.scrap.components;
+package br.unb.scrap.logging;
 
 import java.io.FileWriter;
 import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A classe para gravar exceções em um arquivo. Ela cria um arquivo de log
@@ -10,6 +13,7 @@ import java.io.IOException;
  */
 public class FileLogger {
 
+	private static final Logger logger = LogManager.getLogger(FileLogger.class);
 	private FileWriter fileWriter;
 
 	/**
@@ -21,7 +25,7 @@ public class FileLogger {
 		try {
 			fileWriter = new FileWriter("logs.txt");
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error while creating FileWriter", e);
 		}
 	}
 
@@ -30,7 +34,7 @@ public class FileLogger {
 	 * mensagem da exceção e a URL são gravadas em linhas separadas, seguidas por
 	 * uma linha em branco. Se ocorrer uma IOException durante o processo de
 	 * escrita, ela é impressa na saída de erro padrão.
-	 * 
+	 *
 	 * @param metodo    O método associado à exceção
 	 * @param url       a URL associada à exceção
 	 * @param exception a exceção a ser registrada
@@ -42,7 +46,7 @@ public class FileLogger {
 			fileWriter.write("Exceção: " + exception.getMessage() + "\n\n");
 			fileWriter.flush();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error while writing to log file", e);
 		}
 	}
 
@@ -54,7 +58,7 @@ public class FileLogger {
 		try {
 			fileWriter.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Error while closing FileWriter", e);
 		}
 	}
 }

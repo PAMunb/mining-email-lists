@@ -1,4 +1,4 @@
-package br.unb.scrap.components;
+package br.unb.scrap.pageScraper;
 
 import java.io.IOException;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Set;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import br.unb.scrap.model.Post;
+import br.unb.scrap.domain.Post;
 
 public interface PageScraper {
 

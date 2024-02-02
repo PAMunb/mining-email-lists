@@ -1,4 +1,4 @@
-package br.unb.scrap.model;
+package br.unb.scrap.domain;
 
 import java.io.Serializable;
 

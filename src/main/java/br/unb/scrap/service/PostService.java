@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import br.unb.scrap.model.Post;
+import br.unb.scrap.domain.Post;
 import br.unb.scrap.repository.PostRepository;
 
 @Service
