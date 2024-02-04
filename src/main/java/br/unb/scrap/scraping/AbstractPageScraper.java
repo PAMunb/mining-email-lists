@@ -28,7 +28,8 @@ public abstract class AbstractPageScraper extends ConnectionJsoup {
 	 * dessas URLs para criar objetos Post e armazena esses objetos em uma lista.
 	 *
 	 * @return Retorna uma lista de objetos do tipo Post
-	 * @throws IOException
+	 * @throws IOException se ocorrer um erro de entrada ou saída durante a raspagem
+	 *                     de dados
 	 */
 	public abstract List<Post> execute() throws IOException;
 
@@ -50,11 +51,11 @@ public abstract class AbstractPageScraper extends ConnectionJsoup {
 	protected abstract List<String> getLinksByThread() throws IOException;
 
 	/**
-	 * Método responsável por obter os links dos posts por data a partir de um
-	 * documento HTML, a partir da BASE_URL ou da URL passada.
+	 * Método responsável por obter os links das threads a partir de um documento
+	 * HTML, a partir da BASE_URL ou da URL passada.
 	 *
-	 * @return Retorna a lista de URLs dos posts por data extraídos.
-	 * @throws IOException
+	 * @return Retorna a lista de URLs das threads extraídas.
+	 * @throws IOException se ocorrer um erro de I/O durante a extração dos links
 	 */
 	protected abstract List<String> getLinksByDate() throws IOException;
 

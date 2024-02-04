@@ -18,19 +18,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import br.unb.scrap.domain.Post;
 import br.unb.scrap.enums.PostTypeEnum;
 import br.unb.scrap.logging.FileLogger;
 import br.unb.scrap.scraping.PageScraper;
+import lombok.Data;
 
 /**
  * Classe responsável por realizar a raspagem de dados do site Boost.
  */
 @Component
 //@Primary
+@Data
 public class ScrapBoost implements PageScraper {
 
 	private static final Logger logger = LogManager.getLogger(ScrapBoost.class);

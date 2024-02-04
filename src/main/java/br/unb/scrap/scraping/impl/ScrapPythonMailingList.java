@@ -23,9 +23,11 @@ import br.unb.scrap.domain.Post;
 import br.unb.scrap.enums.PostTypeEnum;
 import br.unb.scrap.logging.FileLogger;
 import br.unb.scrap.scraping.PageScraper;
+import lombok.Data;
 
 @Component
 @Primary
+@Data
 public class ScrapPythonMailingList implements PageScraper {
 
 	private static final Logger logger = LogManager.getLogger(ScrapPythonMailingList.class);

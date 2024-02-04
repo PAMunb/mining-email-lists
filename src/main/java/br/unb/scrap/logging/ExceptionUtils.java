@@ -5,9 +5,12 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import lombok.Data;
+
 /**
  * Classe utilitária para lidar com exceções, logando e registrando-as.
  */
+@Data
 public class ExceptionUtils {
 
     private static final Logger logger = LogManager.getLogger(ExceptionUtils.class);

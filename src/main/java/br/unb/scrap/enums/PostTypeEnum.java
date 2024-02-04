@@ -7,30 +7,21 @@ import lombok.Getter;
  */
 @Getter
 public enum PostTypeEnum {
-	ORIGINAL(true), REPLY(false);
+    ORIGINAL(true), // Representa uma postagem original.
+    REPLY(false);   // Representa uma resposta a uma postagem.
 
-	private boolean value;
+    private boolean value;
 
-	PostTypeEnum(boolean value) {
-		this.value = value;
-	}
+    PostTypeEnum(boolean value) {
+        this.value = value;
+    }
 
-	public void setValue(boolean value) {
-		this.value = value;
-	}
+    /**
+     * Define o valor do tipo de postagem.
+     *
+     * @param value o valor a ser definido
+     */
+    public void setValue(boolean value) {
+        this.value = value;
+    }
 }
-
-//public enum PostTypeEnum {
-//
-//	ORIGINAL(true), REPLY(false);
-//
-//	public boolean isValue() {
-//		return value;
-//	}
-//
-//	public void setValue(boolean value) {
-//		this.value = value;
-//	}
-//
-//	private boolean value;
-//}

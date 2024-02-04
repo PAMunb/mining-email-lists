@@ -6,10 +6,13 @@ import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import lombok.Data;
+
 /**
  * Classe de configuração que utiliza o Jsoup para fazer conexões com páginas
  * HTML.
  */
+@Data
 public class ConnectionJsoup {
 
 	/**

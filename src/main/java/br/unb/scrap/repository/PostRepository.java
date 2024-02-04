@@ -16,10 +16,9 @@ import br.unb.scrap.domain.Post;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
 	/**
-	 * Busca posts por nome do autor e conteúdo do corpo.
+	 * Busca posts por nome do autor.
 	 * 
 	 * @param authorName o nome do autor a ser pesquisado
-	 * @param body       o conteúdo do corpo a ser pesquisado
 	 * @return uma lista de posts
 	 */
 	List<Post> findByAuthorName(String authorName);
