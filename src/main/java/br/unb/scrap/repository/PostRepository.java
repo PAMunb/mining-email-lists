@@ -7,13 +7,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import br.unb.scrap.domain.Post;
 
 /**
- * Classe de repositório do @Post estendendo a JPARepository que por sua vez,
- * estende outros repositórios e divermos elementos de CRUD, Ex: FindAll,
- * FindByID;
- *
+ * Interface de repositório para a entidade Post.
+ * 
+ * Esta interface estende JpaRepository, fornecendo métodos para realizar
+ * operações CRUD (Create, Read, Update, Delete) em objetos Post no banco de
+ * dados.
  */
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-	List<Post> findByAuthorNameAndBody(String authorName, String body);
+	/**
+	 * Busca posts por nome do autor e conteúdo do corpo.
+	 * 
+	 * @param authorName o nome do autor a ser pesquisado
+	 * @param body       o conteúdo do corpo a ser pesquisado
+	 * @return uma lista de posts
+	 */
+	List<Post> findByAuthorName(String authorName);
 
 }

@@ -12,12 +12,16 @@ import br.unb.scrap.domain.Post;
 
 /**
  * Classe abstrata que define um esqueleto para realizar a raspagem de dados de
- * uma página web
- * Não utilizada porque optamos por utiizar uma Interface
+ * uma página web. Não utilizada porque optamos por utiizar uma Interface.
+ * Interfaces são mais flexíveis e permitem que uma classe implemente múltiplas
+ * interfaces.
+ *
+ * @deprecated Esta classe foi marcada como obsoleta porque optamos por usar uma
+ *             Interface. Para mais informações, consulte:
+ *             https://www.baeldung.com/java-interface-vs-abstract-class
  */
-
 @Deprecated
-public abstract class PSabstract extends ConnectionJsoup {
+public abstract class AbstractPageScraper extends ConnectionJsoup {
 
 	/**
 	 * Método abstrato que percorre uma lista de URLs, faz a raspagem de dados

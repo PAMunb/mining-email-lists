@@ -2,63 +2,58 @@ package br.unb.scrap.logging;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 /**
- * A classe para gravar exceções em um arquivo. Ela cria um arquivo de log
- * chamado "logs.txt" e permite registrar exceções juntamente com a URL
- * associada. O arquivo de log é fechado quando o método close() é chamado.
+ * Classe para registrar exceções em um arquivo de log.
  */
+@Component
 public class FileLogger {
 
 	private static final Logger logger = LogManager.getLogger(FileLogger.class);
-	private FileWriter fileWriter;
+	private PrintWriter writer;
 
 	/**
-	 * Constrói um objeto FileLogger e cria um arquivo de log chamado "logs.txt". Se
-	 * ocorrer uma IOException durante a criação do arquivo, ela é impressa na saída
-	 * de erro padrão.
+	 * Construtor que cria um novo arquivo de log com o nome especificado.
+	 *
+	 * @param fileName o nome do arquivo de log
+	 * @throws IOException se ocorrer um erro de E/S ao criar o arquivo
 	 */
-	public FileLogger() {
-		try {
-			fileWriter = new FileWriter("logs.txt");
-		} catch (IOException e) {
-			logger.error("Error while creating FileWriter", e);
-		}
+	public FileLogger(String fileName) throws IOException {
+		writer = new PrintWriter(new FileWriter(fileName));
+		logger.info("Arquivo de log criado: " + fileName);
 	}
 
 	/**
-	 * Registra a exceção especificada e sua URL associada no arquivo de log. A
-	 * mensagem da exceção e a URL são gravadas em linhas separadas, seguidas por
-	 * uma linha em branco. Se ocorrer uma IOException durante o processo de
-	 * escrita, ela é impressa na saída de erro padrão.
+	 * Registra uma exceção no arquivo de log, juntamente com informações sobre o
+	 * método e a URL associados.
 	 *
-	 * @param metodo    O método associado à exceção
+	 * @param method    o método associado à exceção
 	 * @param url       a URL associada à exceção
 	 * @param exception a exceção a ser registrada
 	 */
-	public void logException(String metodo, String url, Exception exception) {
-		try {
-			fileWriter.write("Método: " + metodo + "\n");
-			fileWriter.write("URL: " + url + "\n");
-			fileWriter.write("Exceção: " + exception.getMessage() + "\n\n");
-			fileWriter.flush();
-		} catch (IOException e) {
-			logger.error("Error while writing to log file", e);
-		}
+	public void logException(String method, String url, Exception exception) {
+		writer.println("Date and Time: " + LocalDateTime.now());
+		writer.println("Method: " + method);
+		writer.println("URL: " + url);
+		writer.println("Exception: " + exception.getClass().getSimpleName() + ": " + exception.getMessage());
+		exception.printStackTrace(writer);
+		writer.println();
+		writer.flush();
+
+		// Registro da exceção no logger
+		logger.error("Exceção no método " + method + ", URL: " + url, exception);
 	}
 
 	/**
-	 * Fecha o arquivo de log. Se ocorrer uma IOException durante o processo de
-	 * fechamento, ela é impressa na saída de erro padrão.
+	 * Fecha o arquivo de log.
 	 */
 	public void close() {
-		try {
-			fileWriter.close();
-		} catch (IOException e) {
-			logger.error("Error while closing FileWriter", e);
-		}
+		writer.close();
 	}
 }

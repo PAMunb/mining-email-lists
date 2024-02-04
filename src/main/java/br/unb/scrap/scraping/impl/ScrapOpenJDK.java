@@ -25,7 +25,7 @@ import br.unb.scrap.logging.FileLogger;
 import br.unb.scrap.scraping.PageScraper;
 
 @Component
-@Primary
+//@Primary
 public class ScrapOpenJDK implements PageScraper {
 
 	private static final Logger logger = LogManager.getLogger(ScrapOpenJDK.class);
@@ -35,13 +35,12 @@ public class ScrapOpenJDK implements PageScraper {
 	private static final String DATE_URL_SUFFIX = "date.html";
 	private final FileLogger fileLogger;
 
-	public ScrapOpenJDK() {
-		fileLogger = new FileLogger();
+	public ScrapOpenJDK() throws IOException {
+		this.fileLogger = new FileLogger("scrap_log_OpenJdk.txt");
 	}
 
 	/**
-	 * O método scrap(String url) é responsável por extrair informações relevantes
-	 * de um determinado URL e criar um objeto Post.
+	 * Método para realizar a raspagem de dados de uma postagem.
 	 */
 	@Override
 	public Post scrap(String url) {
@@ -62,10 +61,7 @@ public class ScrapOpenJDK implements PageScraper {
 	}
 
 	/**
-	 * método é responsável por obter os links dos posts por data a partir de um
-	 * documento HTML, a partir da OPENJDK_MAILING_LIST_BASE_URL ou da url passada.
-	 * 
-	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
+	 * Método para obter os links das postagens por data.
 	 */
 	public List<String> getLinksByDate() throws IOException {
 		List<String> dateUrls = new LinkedList<>();
@@ -99,10 +95,8 @@ public class ScrapOpenJDK implements PageScraper {
 	}
 
 	/**
-	 * método é responsável por obter os links das threads a partir de um documento
-	 * HTML, a partir da OPENJDK_MAILING_LIST_BASE_URL ou da url passada.
-	 * 
-	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
+	 * Método para obter os links das postagens por Thread. Não utilizada, por isso
+	 * está marcada como @deprecated
 	 */
 	@Deprecated
 	public List<String> getLinksByThread() throws IOException {
@@ -128,6 +122,30 @@ public class ScrapOpenJDK implements PageScraper {
 			fileLogger.logException("Error while getting links by thread", "url", e);
 		}
 		return threadUrls;
+	}
+
+	/**
+	 * Método para executar a raspagem de dados.
+	 */
+	public List<Post> execute(String baseUrl) throws IOException {
+		List<Post> posts = new LinkedList<>();
+		Set<String> urls;
+		try {
+			urls = getLinksMessages();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return posts;
+		}
+		for (String url : urls) {
+			try {
+				Post post = scrap(url);
+				posts.add(post);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		logger.info(posts);
+		return posts;
 	}
 
 	/**
@@ -176,40 +194,6 @@ public class ScrapOpenJDK implements PageScraper {
 		}
 		logger.info(msgs.size()); // debug
 		return msgs;
-	}
-
-	/**
-	 * Método que percorre uma lista de URLs, faz a raspagem de dados dessas URLs
-	 * para criar objetos Post e armazena esses objetos em uma lista.
-	 * 
-	 * @return Retorna uma lista de objetos do tipo Post
-	 */
-	/**
-	 * Método que percorre uma lista de URLs, faz a raspagem de dados dessas URLs
-	 * para criar objetos Post e armazena esses objetos em uma lista.
-	 * 
-	 * @param baseUrl A URL base para a qual você deseja executar a raspagem.
-	 * @return Retorna uma lista de objetos do tipo Post
-	 */
-	public List<Post> execute(String baseUrl) throws IOException {
-		List<Post> posts = new LinkedList<>();
-		Set<String> urls;
-		try {
-			urls = getLinksMessages();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return posts;
-		}
-		for (String url : urls) {
-			try {
-				Post post = scrap(url);
-				posts.add(post);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		logger.info(posts);
-		return posts;
 	}
 
 	/**
@@ -336,17 +320,16 @@ public class ScrapOpenJDK implements PageScraper {
 	 */
 	public boolean retrievePostType(Document doc, Post post) {
 		try {
-			String searchTerm = "Re:";
-			String title = doc.title();
+			String searchTerm = "Reply";
 			String html = doc.html();
 
-			boolean isOriginal = !title.contains(searchTerm) && !html.contains(searchTerm);
+			boolean isOriginal = html.contains(searchTerm);
 
 			if (isOriginal) {
-				logger.info("This is the original email >>>>>> true");
+				logger.info("This is the original email >>>>>>>>>>>>> true");
 				post.setPostType(PostTypeEnum.ORIGINAL);
 			} else {
-				logger.info("This is the reply email >>>>>> false");
+				logger.info("This is the reply email >>>>>>>>>>>>>  false");
 				post.setPostType(PostTypeEnum.REPLY);
 			}
 
@@ -357,28 +340,5 @@ public class ScrapOpenJDK implements PageScraper {
 			return false;
 		}
 	}
-
-//	public boolean retrievePostType(Document doc, Post post) {
-//		try {
-//			String searchTerm = "Reply";
-//			String html = doc.html();
-//
-//			boolean isOriginal = html.contains(searchTerm);
-//
-//			if (isOriginal) {
-//				logger.info("This is the original email >>>>>> true");
-//				post.setPostType(PostTypeEnum.ORIGINAL);
-//			} else {
-//				logger.info("This is the reply email >>>>>> false");
-//				post.setPostType(PostTypeEnum.REPLY);
-//			}
-//
-//			return isOriginal;
-//		} catch (Exception e) {
-//			logger.error("Error while retrieving post Type", e);
-//			fileLogger.logException("Error while retrieving post Type", "url", e);
-//			return false;
-//		}
-//	}
 
 }

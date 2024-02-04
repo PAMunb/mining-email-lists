@@ -9,21 +9,26 @@ import org.jsoup.select.Elements;
 
 import br.unb.scrap.domain.Post;
 
+/**
+ * Interface que define os métodos necessários para realizar o scraping de uma
+ * página.
+ */
 public interface PageScraper {
 
 	/**
-	 * Executa a raspagem de dados da página.
+	 * Executa o scraping de dados de uma página.
 	 *
-	 * @return uma lista de posts obtidos da página.
-	 * @throws IOException caso ocorra um erro de leitura ou conexão.
+	 * @param url a URL da página a ser scraped.
+	 * @return uma lista de objetos Post obtidos da página.
+	 * @throws IOException se ocorrer um erro de leitura ou conexão.
 	 */
 	List<Post> execute(String url) throws IOException;
 
 	/**
 	 * Extrai os dados de um post a partir de uma URL específica.
 	 *
-	 * @param url a URL do post a ser raspado.
-	 * @return o post raspado.
+	 * @param url a URL do post a ser scraped.
+	 * @return o objeto Post correspondente ao post scraped.
 	 */
 	Post scrap(String url);
 
@@ -31,7 +36,7 @@ public interface PageScraper {
 	 * Obtém os links presentes em uma página, organizados por threads.
 	 *
 	 * @return uma lista de URLs dos links encontrados.
-	 * @throws IOException caso ocorra um erro de leitura ou conexão.
+	 * @throws IOException se ocorrer um erro de leitura ou conexão.
 	 */
 	List<String> getLinksByThread() throws IOException;
 
@@ -39,7 +44,7 @@ public interface PageScraper {
 	 * Obtém os links presentes em uma página, organizados por data.
 	 *
 	 * @return uma lista de URLs dos links encontrados.
-	 * @throws IOException caso ocorra um erro de leitura ou conexão.
+	 * @throws IOException se ocorrer um erro de leitura ou conexão.
 	 */
 	List<String> getLinksByDate() throws IOException;
 
@@ -55,7 +60,7 @@ public interface PageScraper {
 	 * Obtém os links presentes nas mensagens de um post.
 	 *
 	 * @return um conjunto de URLs dos links encontrados.
-	 * @throws IOException caso ocorra um erro de leitura ou conexão.
+	 * @throws IOException se ocorrer um erro de leitura ou conexão.
 	 */
 	Set<String> getLinksMessages() throws IOException;
 
@@ -94,9 +99,9 @@ public interface PageScraper {
 	boolean retrievePostType(Document doc, Post post);
 
 	/**
-	 * Método que percorre uma lista de URLs, faz a raspagem de dados dessas URLs
-	 * para criar objetos Post e armazena esses objetos em uma lista.
-	 * 
-	 * @return Retorna uma lista de objetos do tipo Post
+	 * Método que percorre uma lista de URLs, realiza o scraping de dados dessas
+	 * URLs para criar objetos Post e armazena esses objetos em uma lista.
+	 *
+	 * @return uma lista de objetos Post.
 	 */
 }

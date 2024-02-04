@@ -27,21 +27,18 @@ class PostServiceTest {
 	@Test
 	public void testFindPostsByAuthorAndBody() {
 		String authorName = "Alana Paula";
-		String body = "Teste Aleatório";
 
 		Post post1 = new Post();
 		post1.setAuthorName(authorName);
-		post1.setBody(body);
 
 		Post post2 = new Post();
 		post2.setAuthorName(authorName);
-		post2.setBody(body);
 
 		List<Post> expectedPosts = Arrays.asList(post1, post2);
 
-		when(postRepository.findByAuthorNameAndBody(authorName, body)).thenReturn(expectedPosts);
+		when(postRepository.findByAuthorName(authorName)).thenReturn(expectedPosts);
 
-		List<Post> actualPosts = postService.findPostsByAuthorAndBody(authorName, body);
+		List<Post> actualPosts = postService.findPostsByAuthor(authorName);
 
 		assertEquals(expectedPosts, actualPosts);
 	}

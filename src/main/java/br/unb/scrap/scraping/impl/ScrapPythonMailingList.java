@@ -16,6 +16,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import br.unb.scrap.domain.Post;
@@ -24,7 +25,7 @@ import br.unb.scrap.logging.FileLogger;
 import br.unb.scrap.scraping.PageScraper;
 
 @Component
-//@Primary
+@Primary
 public class ScrapPythonMailingList implements PageScraper {
 
 	private static final Logger logger = LogManager.getLogger(ScrapPythonMailingList.class);
@@ -34,13 +35,12 @@ public class ScrapPythonMailingList implements PageScraper {
 	private static final String DATE_URL_SUFFIX = "date.html";
 	private final FileLogger fileLogger;
 
-	public ScrapPythonMailingList() {
-		fileLogger = new FileLogger();
+	public ScrapPythonMailingList() throws IOException {
+		this.fileLogger = new FileLogger("scrap_log_PythonMailingList.txt");
 	}
 
 	/**
-	 * O método scrap(String url) é responsável por extrair informações relevantes
-	 * de um determinado URL e criar um objeto Post.
+	 * Método para realizar a raspagem de dados de uma postagem.
 	 */
 	@Override
 	public Post scrap(String url) {
@@ -61,11 +61,7 @@ public class ScrapPythonMailingList implements PageScraper {
 	}
 
 	/**
-	 * método é responsável por obter os links dos posts por data a partir de um
-	 * documento HTML, a partir da PYTHON_LIST_MAILING_LIST_BASE_URL ou da url
-	 * passada.
-	 * 
-	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
+	 * Método para obter os links das postagens por data.
 	 */
 	public List<String> getLinksByDate() throws IOException {
 		List<String> dateUrls = new LinkedList<>();
@@ -99,10 +95,8 @@ public class ScrapPythonMailingList implements PageScraper {
 	}
 
 	/**
-	 * método é responsável por obter os links das threads a partir de um documento
-	 * HTML, a partir da PYTHON_LIST_MAILING_LIST_BASE_URL ou da url passada.
-	 * 
-	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
+	 * Método para obter os links das postagens por Thread. Não utilizada, por isso
+	 * está marcada como @deprecated
 	 */
 	@Deprecated
 	public List<String> getLinksByThread() throws IOException {
@@ -128,6 +122,30 @@ public class ScrapPythonMailingList implements PageScraper {
 			fileLogger.logException("Error while getting links by thread", "url", e);
 		}
 		return threadUrls;
+	}
+
+	/**
+	 * Método para executar a raspagem de dados.
+	 */
+	public List<Post> execute(String baseUrl) throws IOException {
+		List<Post> posts = new LinkedList<>();
+		Set<String> urls;
+		try {
+			urls = getLinksMessages();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return posts;
+		}
+		for (String url : urls) {
+			try {
+				Post post = scrap(url);
+				posts.add(post);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		logger.info(posts);
+		return posts;
 	}
 
 	/**
@@ -168,7 +186,7 @@ public class ScrapPythonMailingList implements PageScraper {
 					String link = li.select("a").first().attr("href");
 					msgs.add(url.replace(DATE_URL_SUFFIX, link));
 				}
-				 break; // debug
+				// break; // debug
 			} catch (Exception e) {
 				logger.error("Error while getting links messages for URL: " + url, e);
 				fileLogger.logException("Error while getting links messages for URL:", "url", e);
@@ -176,40 +194,6 @@ public class ScrapPythonMailingList implements PageScraper {
 		}
 		logger.info(msgs.size()); // debug
 		return msgs;
-	}
-
-	/**
-	 * Método que percorre uma lista de URLs, faz a raspagem de dados dessas URLs
-	 * para criar objetos Post e armazena esses objetos em uma lista.
-	 * 
-	 * @return Retorna uma lista de objetos do tipo Post
-	 */
-	/**
-	 * Método que percorre uma lista de URLs, faz a raspagem de dados dessas URLs
-	 * para criar objetos Post e armazena esses objetos em uma lista.
-	 * 
-	 * @param baseUrl A URL base para a qual você deseja executar a raspagem.
-	 * @return Retorna uma lista de objetos do tipo Post
-	 */
-	public List<Post> execute(String baseUrl) throws IOException {
-		List<Post> posts = new LinkedList<>();
-		Set<String> urls;
-		try {
-			urls = getLinksMessages();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return posts;
-		}
-		for (String url : urls) {
-			try {
-				Post post = scrap(url);
-				posts.add(post);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		logger.info(posts);
-		return posts;
 	}
 
 	/**

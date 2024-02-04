@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -16,9 +17,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Classe model com seus respectivos atributos. Getters/setters/hashcode and
- * equals sendo gerados automaticamente e implícitamente pelo lombok.
- * Anotação @Entity indicando que é uma entidade do banco de dados.
+ * Classe model representando um post.. Getters/setters/hashcode and equals
+ * sendo gerados automaticamente e implícitamente pelo lombok.
  *
  */
 @Getter
@@ -58,18 +58,19 @@ public class Post implements Serializable {
 	/**
 	 * Texto presente no corpo do Post.
 	 */
+	@NotBlank
 	@Column(columnDefinition = "TEXT")
 	private String body;
 
 	/**
-	 * Indica se a mensagem é original ou um reply.
+	 * Indica se o post é original ou um reply.
 	 */
 	private boolean original;
 
-	private PostTypeEnum postTypeEnum;
+	private PostTypeEnum postType;
 
 	public void setPostType(PostTypeEnum postTypeEnum) {
-		this.postTypeEnum = postTypeEnum;
+		this.postType = postTypeEnum;
 
 	}
 }

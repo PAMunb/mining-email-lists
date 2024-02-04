@@ -1,26 +1,36 @@
 package br.unb.scrap.enums;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 /**
- * Classe enum que representa os tipos de postagens. O enum possui dois valores
- * possíveis: ORIGINAL e REPLY.
- *
+ * Enum que representa os tipos de postagens: ORIGINAL e REPLY.
  */
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
 public enum PostTypeEnum {
-
 	ORIGINAL(true), REPLY(false);
 
-	public boolean isValue() {
-		return value;
+	private boolean value;
+
+	PostTypeEnum(boolean value) {
+		this.value = value;
 	}
 
 	public void setValue(boolean value) {
 		this.value = value;
 	}
-
-	private boolean value;
 }
+
+//public enum PostTypeEnum {
+//
+//	ORIGINAL(true), REPLY(false);
+//
+//	public boolean isValue() {
+//		return value;
+//	}
+//
+//	public void setValue(boolean value) {
+//		this.value = value;
+//	}
+//
+//	private boolean value;
+//}
