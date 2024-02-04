@@ -1,7 +1,5 @@
 package br.unb.scrap.utils;
 
-import lombok.Data;
-@Data
 public final class UrlUtils {
 
 	public static final String BOOST_ARCHIVES_BASE_URL = "https://lists.boost.org/Archives/boost/";

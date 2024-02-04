@@ -1,8 +1,8 @@
 package br.unb.scrap;
 
 //import static br.unb.scrap.utils.UrlUtils.BOOST_ARCHIVES_BASE_URL;
-//import static br.unb.scrap.utils.UrlUtils.OPENJDK_MAILING_LIST_BASE_URL;
-import static br.unb.scrap.utils.UrlUtils.PYTHON_LIST_MAILING_LIST_BASE_URL;
+import static br.unb.scrap.utils.UrlUtils.OPENJDK_MAILING_LIST_BASE_URL;
+//import static br.unb.scrap.utils.UrlUtils.PYTHON_LIST_MAILING_LIST_BASE_URL;
 //import static br.unb.scrap.utils.UrlUtils.JAVA_MAIL_ARCHIVE_BASE_URL;
 
 import java.io.IOException;
@@ -41,8 +41,8 @@ public class WebCrawlerApplication implements CommandLineRunner {
 		logger.info("..................... Running Application");
 
 //		fillDataBase(BOOST_ARCHIVES_BASE_URL);
-//		fillDataBase(OPENJDK_MAILING_LIST_BASE_URL);
-		fillDataBase(PYTHON_LIST_MAILING_LIST_BASE_URL);
+		fillDataBase(OPENJDK_MAILING_LIST_BASE_URL);
+//		fillDataBase(PYTHON_LIST_MAILING_LIST_BASE_URL);
 //		fillDataBase(JAVA_MAIL_ARCHIVE_BASE_URL);
 
 		long postCount = repo.count();

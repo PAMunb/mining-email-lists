@@ -16,7 +16,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import br.unb.scrap.domain.Post;
@@ -25,7 +24,7 @@ import br.unb.scrap.logging.FileLogger;
 import br.unb.scrap.scraping.PageScraper;
 
 @Component
-@Primary
+//@Primary
 public class ScrapPythonMailingList implements PageScraper {
 
 	private static final Logger logger = LogManager.getLogger(ScrapPythonMailingList.class);
@@ -105,6 +104,7 @@ public class ScrapPythonMailingList implements PageScraper {
 	 * 
 	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
+	@Deprecated
 	public List<String> getLinksByThread() throws IOException {
 		List<String> threadUrls = new LinkedList<>();
 		try {
@@ -168,7 +168,7 @@ public class ScrapPythonMailingList implements PageScraper {
 					String link = li.select("a").first().attr("href");
 					msgs.add(url.replace(DATE_URL_SUFFIX, link));
 				}
-				// break; // debug
+				 break; // debug
 			} catch (Exception e) {
 				logger.error("Error while getting links messages for URL: " + url, e);
 				fileLogger.logException("Error while getting links messages for URL:", "url", e);

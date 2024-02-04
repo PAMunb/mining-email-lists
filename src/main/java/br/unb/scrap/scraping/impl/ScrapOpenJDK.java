@@ -16,6 +16,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import br.unb.scrap.domain.Post;
@@ -24,7 +25,7 @@ import br.unb.scrap.logging.FileLogger;
 import br.unb.scrap.scraping.PageScraper;
 
 @Component
-//@Primary
+@Primary
 public class ScrapOpenJDK implements PageScraper {
 
 	private static final Logger logger = LogManager.getLogger(ScrapOpenJDK.class);
@@ -103,6 +104,7 @@ public class ScrapOpenJDK implements PageScraper {
 	 * 
 	 * @return Retorna a lista urls contendo as URLs das threads extraídas.
 	 */
+	@Deprecated
 	public List<String> getLinksByThread() throws IOException {
 		List<String> threadUrls = new LinkedList<>();
 		try {
@@ -334,10 +336,11 @@ public class ScrapOpenJDK implements PageScraper {
 	 */
 	public boolean retrievePostType(Document doc, Post post) {
 		try {
-			String searchTerm = "Reply";
+			String searchTerm = "Re:";
+			String title = doc.title();
 			String html = doc.html();
 
-			boolean isOriginal = html.contains(searchTerm);
+			boolean isOriginal = !title.contains(searchTerm) && !html.contains(searchTerm);
 
 			if (isOriginal) {
 				logger.info("This is the original email >>>>>> true");
@@ -354,5 +357,28 @@ public class ScrapOpenJDK implements PageScraper {
 			return false;
 		}
 	}
+
+//	public boolean retrievePostType(Document doc, Post post) {
+//		try {
+//			String searchTerm = "Reply";
+//			String html = doc.html();
+//
+//			boolean isOriginal = html.contains(searchTerm);
+//
+//			if (isOriginal) {
+//				logger.info("This is the original email >>>>>> true");
+//				post.setPostType(PostTypeEnum.ORIGINAL);
+//			} else {
+//				logger.info("This is the reply email >>>>>> false");
+//				post.setPostType(PostTypeEnum.REPLY);
+//			}
+//
+//			return isOriginal;
+//		} catch (Exception e) {
+//			logger.error("Error while retrieving post Type", e);
+//			fileLogger.logException("Error while retrieving post Type", "url", e);
+//			return false;
+//		}
+//	}
 
 }

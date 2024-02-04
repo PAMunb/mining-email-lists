@@ -21,6 +21,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import br.unb.scrap.annotations.NotReady;
 import br.unb.scrap.domain.Post;
 import br.unb.scrap.enums.PostTypeEnum;
 import br.unb.scrap.logging.FileLogger;
@@ -28,7 +29,7 @@ import br.unb.scrap.scraping.PageScraper;
 
 @Component
 //@Primary
-@Deprecated
+@NotReady(reason = "Still under development")
 public class ScrapJavaMail implements PageScraper {
 
 	private static final Logger logger = LogManager.getLogger(ScrapJavaMail.class);
@@ -42,6 +43,7 @@ public class ScrapJavaMail implements PageScraper {
 	}
 
 	@Override
+	@NotReady(reason = "Still under development")
 	public Post scrap(String url) {
 		Post post = new Post();
 		try {
@@ -59,6 +61,7 @@ public class ScrapJavaMail implements PageScraper {
 		return post;
 	}
 
+	@NotReady(reason = "Still under development")
 	public List<String> getLinksByDate() throws IOException {
 		List<String> dateUrls = new LinkedList<>();
 		try {
@@ -92,6 +95,7 @@ public class ScrapJavaMail implements PageScraper {
 		return dateUrls;
 	}
 
+	@NotReady(reason = "Still under development")
 	public List<String> getLinksByThread() throws IOException {
 		List<String> threadUrls = new LinkedList<>();
 		try {
@@ -172,6 +176,7 @@ public class ScrapJavaMail implements PageScraper {
 		return posts;
 	}
 
+	@NotReady(reason = "Still under development")
 	public void retrieveAuthorAndDate(Document doc, Post post) {
 		try {
 			Element headers = doc.select("p.headers").first();
@@ -203,6 +208,7 @@ public class ScrapJavaMail implements PageScraper {
 		}
 	}
 
+	@NotReady(reason = "Still under development")
 	public void retrieveTitle(Document doc, Post post) {
 		try {
 			Elements title = doc.select("title");
@@ -219,6 +225,7 @@ public class ScrapJavaMail implements PageScraper {
 
 	}
 
+	@NotReady(reason = "Still under development")
 	public void retrieveBody(Document doc, Post post) {
 		try {
 			String start = "<!-- body=\"start\" -->";
@@ -238,6 +245,7 @@ public class ScrapJavaMail implements PageScraper {
 		}
 	}
 
+	@NotReady(reason = "Still under development")
 	protected String getStringBetweenTwoCharacters(String input, String from, String to) {
 		try {
 			return input.substring(input.indexOf(from) + 1, input.lastIndexOf(to));
@@ -248,6 +256,7 @@ public class ScrapJavaMail implements PageScraper {
 		}
 	}
 
+	@NotReady(reason = "Still under development")
 	protected String utf8EncodedString(String str) {
 		try {
 			byte[] bytes = str.getBytes(StandardCharsets.UTF_8);
@@ -259,6 +268,7 @@ public class ScrapJavaMail implements PageScraper {
 		}
 	}
 
+	@NotReady(reason = "Still under development")
 	public boolean retrievePostType(Document doc, Post post) {
 		try {
 			String searchTerm = "Reply";
