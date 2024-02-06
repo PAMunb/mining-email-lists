@@ -42,7 +42,7 @@ public class WebCrawlerApplication implements CommandLineRunner {
 	public static void main(String[] args) {
 		logger.info(">>>>>> Starting Application");
 		SpringApplication.run(WebCrawlerApplication.class, args);
-		logger.info("====== Application Started");
+		logger.info("======================= fim :) ==================");
 	}
 
 	/**
@@ -62,9 +62,12 @@ public class WebCrawlerApplication implements CommandLineRunner {
 		// fillDataBase(PYTHON_LIST_MAILING_LIST_BASE_URL);
 		// fillDataBase(JAVA_MAIL_ARCHIVE_BASE_URL);
 
+		logger.info("*************************************************************");
+		logger.info(">>>>>>>>>>>>>>>>>>Scraping finalizado<<<<<<<<<<<<<<<<<<<<<");
 		long postCount = repo.count();
 		logger.info("Quantidade de Posts: " + " >>>>>>>>>>>>>>> " + postCount);
 
+		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>Exportando Scraping para arquivo .CSV<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 		if (postCount > 0) {
 			logger.info("Iniciando exportação de dados...");
 			dataExporter.exportData();
@@ -73,7 +76,6 @@ public class WebCrawlerApplication implements CommandLineRunner {
 			logger.warn("Nenhum post foi encontrado. Exportação de dados não realizada.");
 		}
 
-		logger.info("++++++++++++++++++++++");
 	}
 
 	/**
