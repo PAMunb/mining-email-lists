@@ -18,6 +18,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import br.unb.scrap.domain.Post;
@@ -30,7 +31,7 @@ import lombok.Data;
  * Classe responsável por realizar a raspagem de dados do site Boost.
  */
 @Component
-//@Primary
+@Primary
 @Data
 public class ScrapBoost implements PageScraper {
 
@@ -43,7 +44,7 @@ public class ScrapBoost implements PageScraper {
 	public ScrapBoost() throws IOException {
 		this.fileLogger = new FileLogger("scrap_log_Boost.txt");
 	}
-	
+
 	/**
 	 * Método auxiliar para lidar com exceções, logando e registrando-as.
 	 */
@@ -119,7 +120,7 @@ public class ScrapBoost implements PageScraper {
 					String link = li.select("a").attr("href");
 					msgs.add(url.replace(DATE_URL_SUFFIX, link));
 				}
-				//break; // debug
+				break; // debug
 			} catch (IOException e) {
 				handleException("Error while getting links messages for URL: " + url, e, url);
 			}

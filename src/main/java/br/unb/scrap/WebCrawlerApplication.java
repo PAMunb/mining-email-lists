@@ -1,9 +1,6 @@
 package br.unb.scrap;
 
 import static br.unb.scrap.utils.UrlUtils.BOOST_ARCHIVES_BASE_URL;
-//import static br.unb.scrap.utils.UrlUtils.OPENJDK_MAILING_LIST_BASE_URL;
-//import static br.unb.scrap.utils.UrlUtils.JAVA_MAIL_ARCHIVE_BASE_URL;
-//import static br.unb.scrap.utils.UrlUtils.PYTHON_LIST_MAILING_LIST_BASE_URL;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +12,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import br.unb.scrap.dataexport.DataExporter;
 import br.unb.scrap.domain.Post;
 import br.unb.scrap.repository.PostRepository;
 import br.unb.scrap.scraping.PageScraper;
@@ -33,6 +31,9 @@ public class WebCrawlerApplication implements CommandLineRunner {
 	@Autowired
 	private PageScraper scraper;
 
+	@Autowired
+	private DataExporter dataExporter;
+
 	/**
 	 * Método principal que inicia a aplicação web crawler.
 	 *
@@ -45,8 +46,9 @@ public class WebCrawlerApplication implements CommandLineRunner {
 	}
 
 	/**
-	 * Método responsável por iniciar a aplicação e preencher o banco de dados com
-	 * dados obtidos a partir de uma URL específica.
+	 * Método responsável por iniciar a aplicação, preencher o banco de dados com
+	 * dados obtidos a partir de uma URL específica e exportar os dados para CSV e
+	 * JSON.
 	 * 
 	 * @param args os argumentos passados para a aplicação
 	 * @throws Exception se ocorrer um erro durante a execução da aplicação
@@ -62,6 +64,14 @@ public class WebCrawlerApplication implements CommandLineRunner {
 
 		long postCount = repo.count();
 		logger.info("Quantidade de Posts: " + " >>>>>>>>>>>>>>> " + postCount);
+
+		if (postCount > 0) {
+			logger.info("Iniciando exportação de dados...");
+			dataExporter.exportData();
+			logger.info("Exportação de dados concluída com sucesso.");
+		} else {
+			logger.warn("Nenhum post foi encontrado. Exportação de dados não realizada.");
+		}
 
 		logger.info("++++++++++++++++++++++");
 	}

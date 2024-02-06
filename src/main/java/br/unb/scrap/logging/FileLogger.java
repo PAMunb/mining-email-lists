@@ -46,7 +46,6 @@ public class FileLogger {
 		writer.println();
 		writer.flush();
 
-		// Registro da exceção no logger
 		logger.error("Exceção no método " + method + ", URL: " + url, exception);
 	}
 

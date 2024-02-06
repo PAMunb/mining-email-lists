@@ -26,7 +26,7 @@ import br.unb.scrap.scraping.PageScraper;
 import lombok.Data;
 
 @Component
-@Primary
+//@Primary
 @Data
 public class ScrapPythonMailingList implements PageScraper {
 
